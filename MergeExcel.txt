@@ -1,0 +1,11 @@
+Sub GetSheets()
+
+Path = "I:\LuanAn\4_TMP\out_excel\"
+Filename = Dir(Path & "*.xlsx")
+ Do While Filename <> ""
+ Workbooks.Open Filename:=Path & Filename, ReadOnly:=True
+ ActiveWorkbook.Sheets(1).Copy After:=ThisWorkbook.Sheets(1)
+ Workbooks(Filename).Close
+ Filename = Dir()
+ Loop
+End Sub
