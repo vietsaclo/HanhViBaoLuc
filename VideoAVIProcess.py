@@ -1,16 +1,19 @@
 from Modules import PublicModules as lib
 import os
+import threading
+
 from time import sleep
 
-SO_LAN_CAT_VIDEO = 'L01'
+SO_LAN_CAT_VIDEO = '1'
+ID_NGUOICAT = '10'
 
-DIR_INPUT = 'D:\\[VIET-SACLO]\\TongHopDataKhoaLuan\\4_TMP\\out_video'
+DIR_INPUT = 'D:\\[LuanAn_BaoLuc2]\\4_TMP\\NguyenVanHieuLan1\\out_video'
+DIR_INPUT_VDGOC = 'D:\\[LuanAn_BaoLuc2]\\4_TMP\\NguyenVanHieuLan1\\video'
 
-PATH_INPUT_START_ID = 'D:\\[VIET-SACLO]\\TongHopDataKhoaLuan\\0_Important\\START_ID.TXT'
+DIR_OUTPUT = 'D:\\[LuanAn_BaoLuc2]\\3_KetQuaChuanHoa\\out_video'
+DIR_OUTPUT_LARGE = 'D:\\[LuanAn_BaoLuc2]\\3_KetQuaChuanHoa\\out_video_large'
+DIR_OUTPUT_VDGOC = 'D:\\[LuanAn_BaoLuc2]\\3_KetQuaChuanHoa\\video_goc'
 
-DIR_OUTPUT = 'D:\\[VIET-SACLO]\\TongHopDataKhoaLuan\\3_KetQuaChuanHoa\\out_video'
-
-DIR_OUTPUT_LARGE = 'D:\\[VIET-SACLO]\\TongHopDataKhoaLuan\\3_KetQuaChuanHoa\\out_video_large'
 
 DEFAULT_SIZE_VIDEO = (224, 224)
 
@@ -47,18 +50,17 @@ def fun_getID(videoName: str):
         idStart += 1
         tmp = vid[idStart]
 
-    return 'ID'+result
+    return result
 
 def fun_getVideoName(videoName: str):
     idStart = videoName.index('_')
-    idStart += 1
-    tmp = videoName[idStart]
+    tmp = videoName[idStart + 1]
     result = ''
-    while tmp != '_':
+    while tmp != '.':
         result += tmp
         idStart += 1
-        tmp = videoName[idStart]
-    return 'T'+result
+        tmp = videoName[idStart + 1]
+    return result
 
 def chuanHoaToanBoVideoTrongTungThuMuc():
     count1 = 0
@@ -110,7 +112,7 @@ def xuatVideoVaoTungThuMuc(pathIn: str, pathOut: str):
     @:param: START_ID: int: ID bat dau danh. vi du: START_ID = 1, list video out se duoc danh tu 1...n
     @:param: IS_RESIZE: bool: co muon resize ve dang 224 X 224 default = true
 '''
-def fun_danhLaiIDChoVideo(DIR_INPUT: str,PATH_INPUT_START_ID: str, DIR_OUTPUT: str, DIR_OUTPUT_LARGE: str, START_ID: int, IS_RESIZE: bool= True):
+def fun_danhLaiIDChoVideo(DIR_INPUT: str, DIR_OUTPUT: str, DIR_OUTPUT_LARGE: str, IS_RESIZE: bool= True):
     # Validate
     if not os.path.exists(DIR_INPUT):
         os.makedirs(DIR_INPUT)
@@ -119,7 +121,7 @@ def fun_danhLaiIDChoVideo(DIR_INPUT: str,PATH_INPUT_START_ID: str, DIR_OUTPUT: s
     if not os.path.exists(DIR_OUTPUT_LARGE):
         os.makedirs(DIR_OUTPUT_LARGE)
 
-    ID = START_ID
+    # ID = START_ID
     filesName = lib.fun_getFileNames(path= DIR_INPUT)
     count = 0 # For calculator progress
     max = len(filesName) # For calculator progress
@@ -128,9 +130,9 @@ def fun_danhLaiIDChoVideo(DIR_INPUT: str,PATH_INPUT_START_ID: str, DIR_OUTPUT: s
         IDVID = fun_getID(videoName= file)
         TENVID = fun_getVideoName(file)
         nameVideoIn = DIR_INPUT + '\\' + file
-        nameVideoOut = '{0}\\{1}_{2}_{3}_{4}_{5}.avi'.format(DIR_OUTPUT, HD, IDVID, SO_LAN_CAT_VIDEO, TENVID, ID)
-        nameVideoOut_large = '{0}\\{1}_{2}_{3}_{4}_{5}.avi'.format(DIR_OUTPUT_LARGE, HD, IDVID, SO_LAN_CAT_VIDEO, TENVID, ID)
-        ID += 1
+        nameVideoOut = '{0}\\{1}{2}_{3}_{4}.avi'.format(DIR_OUTPUT, HD, IDVID, SO_LAN_CAT_VIDEO, TENVID)
+        nameVideoOut_large = '{0}\\{1}{2}_{3}_{4}.avi'.format(DIR_OUTPUT_LARGE, HD, IDVID, SO_LAN_CAT_VIDEO, TENVID)
+        # ID += 1
 
         frames = lib.fun_getFramesOfVideo_ALL(path= nameVideoIn)
         if IS_RESIZE:
@@ -144,8 +146,27 @@ def fun_danhLaiIDChoVideo(DIR_INPUT: str,PATH_INPUT_START_ID: str, DIR_OUTPUT: s
         lib.fun_print_process(count= count, max= max, mess= 'Progress Video Output ID: ')
         count += 1
 
-    fun_write_START_ID(path= PATH_INPUT_START_ID, START_ID= ID)
-    print('\rMax ID: ', ID)
+
+def fun_danhLaiIDChoVideoGoc(DIR_INPUT, DIR_OUTPUT):
+    # Validate
+    if not os.path.exists(DIR_INPUT):
+        print('Folder VideoGoc is not existing!!')
+    if not os.path.exists(DIR_OUTPUT):
+        print('Folder OUT VideoGoc is not existing!!')
+
+    filesName = lib.fun_getFileNames(path=DIR_INPUT)
+    count = 0  # For calculator progress
+    max = len(filesName)  # For calculator progress
+
+    for file in filesName:
+        nameVideoIn = DIR_INPUT + '\\' + file
+        nameVideoOut = '{0}\\{1}_{2}_{3}.avi'.format(DIR_OUTPUT, ID_NGUOICAT, SO_LAN_CAT_VIDEO, file[0:len(file)-4])
+
+        frames = lib.fun_getFramesOfVideo_ALL(path=nameVideoIn)
+        lib.fun_saveFramesToVideo(frames=frames, path=nameVideoOut, fps=30)
+
+        lib.fun_print_process(count= count, max= max, mess= 'Processing VideoGOC ID: ')
+        count += 1
 
 def fun_read_START_ID(path: str) -> int:
     try:
@@ -167,11 +188,7 @@ def fun_write_START_ID(path: str, START_ID) -> bool:
         lib.fun_print(name='Write file: '+path, value='Error To Write File from path!')
         return False
 
-import tensorflow as tf
 
-if __name__ == '__main__':
-    #------------------- START ID VERY IMPORTANT--------------------
-    START_ID = fun_read_START_ID(path= PATH_INPUT_START_ID)
-    #---------------------------------------------------------------
-    if START_ID != -1:
-        fun_danhLaiIDChoVideo(DIR_INPUT= DIR_INPUT, PATH_INPUT_START_ID= PATH_INPUT_START_ID, DIR_OUTPUT= DIR_OUTPUT, DIR_OUTPUT_LARGE= DIR_OUTPUT_LARGE, START_ID= START_ID, IS_RESIZE= True)
+
+# fun_danhLaiIDChoVideoGoc(DIR_INPUT=DIR_INPUT_VDGOC, DIR_OUTPUT=DIR_OUTPUT_VDGOC)
+fun_danhLaiIDChoVideo(DIR_INPUT= DIR_INPUT, DIR_OUTPUT= DIR_OUTPUT, DIR_OUTPUT_LARGE= DIR_OUTPUT_LARGE, IS_RESIZE= True)
