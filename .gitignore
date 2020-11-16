@@ -141,3 +141,4 @@ cython_debug/
 Models/
 Train_30_10_2020_2/
 .idea/
+Data/
