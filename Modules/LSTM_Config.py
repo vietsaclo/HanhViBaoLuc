@@ -12,32 +12,41 @@ import matplotlib.pyplot as plt
 DIR_ROOT = ''
 DIR_INPUT_TRAIN = DIR_ROOT + 'Data/Train'
 DIR_INPUT_TEST = DIR_ROOT + 'Data/Test'
+DIR_INPUT_TEST1 = DIR_ROOT + 'Data/Test1'
 DIR_INPUT_VALIDATION = DIR_ROOT + 'Data/Validation'
-DIR_MODEL_LSTM = DIR_ROOT + 'Modules/LSTM_Train_16_11_2020.h5'
+DIR_INPUT_SHOW_VIDEO_TEST = DIR_ROOT + 'Data/ShowVideoTest'
+DIR_INPUT_SHOW_VIDEO_TRAIN = DIR_ROOT + 'Data/ShowVideoTrain'
+DIR_MODEL_LSTM = DIR_ROOT + 'Modules/LSTM_Model.h5'
 DIR_MODEL_CNN = DIR_ROOT + 'Modules/VGG16_Model.h5'
 SIZE = (224, 224)
 NUM_FRAME_INPUT_LSTM = 20
 TRANSFER_VALUE_SIZE = 4096
 RNN_SIZE = 512
-EPOCH = 10
-BATCH_SIZE = 150
+EPOCH = 400
+BATCH_SIZE = 200
 
 VIDEO_NAMES = [
     'da',
     'dn',
-    'om'
+    'nt',
+    'xd',
+    'xt'
 ]
 
 VIDEO_NAMES_DETAIL = [
-    'Đá',
-    'Đánh, tát',
-    'Ôm, vật lộn'
+    'Da',
+    'Danh Tat',
+    'Nam Toc',
+    'Xo Day',
+    'Xi Tay'
 ]
 
 VIDEO_LABELS = [
-    [1, 0, 0],
-    [0, 1, 0],
-    [0, 0, 1],
+    [1, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0],
+    [0, 0, 1, 0, 0],
+    [0, 0, 0, 1, 0],
+    [0, 0, 0, 0, 1],
 ]
 
 NUM_CLASSIFY = len(VIDEO_NAMES)
@@ -93,12 +102,12 @@ def fun_getTransferValue(pathVideoOrListFrame, modelVGG16):
     return transfer
 
 # chuan bi tap du lieu + nhan de train lstm
-def fun_getTrainSet_LabelSet(numItem: int, modelVGG16, names, labels, mess: str= 'Train'):
+def fun_getTrainSet_LabelSet(pathVideoOrListFrame: str, numItem: int, modelVGG16, names, labels, mess: str= 'Train'):
     count = 0
     trainSet = []
     labelSet = []
     while count < numItem:
-        itemTrain = fun_getTransferValue(pathVideoOrListFrame=DIR_INPUT_TRAIN + names[count], modelVGG16= modelVGG16)
+        itemTrain = fun_getTransferValue(pathVideoOrListFrame=pathVideoOrListFrame + names[count], modelVGG16= modelVGG16)
         itemLable = fun_onesHotLabel(label=labels[count])
 
         trainSet.append(itemTrain)
@@ -126,7 +135,9 @@ def fun_getModelLSTM(rnn_size: int = 512, input_shape: tuple = (20, 4096), num_c
 # bat dau cong viec train lstm
 def fun_START_TRAINT_LSTM(modelVGG16, modelLSTM, trainSet, labelSet):
     valName, valLabel = fun_getVideoLabelNames_EachFolder(path= DIR_INPUT_VALIDATION)
-    valSet, valLabelSet = fun_getTrainSet_LabelSet(numItem= len(valName),
+    print('len Valid: ', len(valName))
+    input('any: ')
+    valSet, valLabelSet = fun_getTrainSet_LabelSet(pathVideoOrListFrame= DIR_INPUT_VALIDATION ,numItem= len(valName),
                                                    modelVGG16= modelVGG16,
                                                    names= valName, labels= valLabel,
                                                    mess= 'Validation')

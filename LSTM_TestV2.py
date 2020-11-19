@@ -12,7 +12,7 @@ if __name__ == '__main__':
         - Truy cap vao thu muc DIR_INPUT_TRAIN lay toan bo file video va nhan bo vao mang.
         - Vidu: names[da1_1_111_001.avi,nt2_1_222_002.avi] ~ labels[ [1,0,0], [0,1,0] ]
     '''
-    names, labels = cf.fun_getVideoLabelNames_EachFolder(path=cf.DIR_INPUT_TEST)
+    names, labels = cf.fun_getVideoLabelNames_EachFolder(path=cf.DIR_INPUT_TEST1)
 
     '''
         CHUAN BI TAP DU LIEU & NHAN DE TEST,
@@ -20,7 +20,9 @@ if __name__ == '__main__':
         Moi hinh duoc cho qua VGG16 de lay mau ~ 4096
         - Vidu: 20 frame (224 x 224) ~ 20 * 4096 = [ [4096PhanTu],... [4096PhanTu] ]
     '''
-    testSet, labelSet = cf.fun_getTrainSet_LabelSet(numItem=len(names), modelVGG16= modelVGG16, names= names, labels= labels)
+
+    testSet, labelSet = cf.fun_getTrainSet_LabelSet(pathVideoOrListFrame=cf.DIR_INPUT_TEST1
+                                                    , numItem=len(names), modelVGG16= modelVGG16, names= names, labels= labels)
 
     '''
         LOAD LSTM MODEL,
