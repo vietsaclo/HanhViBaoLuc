@@ -14,13 +14,17 @@ if __name__ == '__main__':
     '''
     names, labels = cf.fun_getVideoLabelNames_EachFolder(path=cf.DIR_INPUT_TRAIN)
 
+    print('len Train: ', len(names))
+    input('any: ')
+
     '''
         CHUAN BI TAP DU LIEU & NHAN DE TRAIN LSTM,
         - Mang LSTM duoc dinh nghia nhan vao 20 frame hinh,
         Moi hinh duoc cho qua VGG16 de lay mau ~ 4096
         - Vidu: 20 frame (224 x 224) ~ 20 * 4096 = [ [4096PhanTu],... [4096PhanTu] ]
     '''
-    trainSet, labelSet = cf.fun_getTrainSet_LabelSet(numItem=len(names), modelVGG16= modelVGG16, names= names, labels= labels)
+    trainSet, labelSet = cf.fun_getTrainSet_LabelSet(pathVideoOrListFrame=cf.DIR_INPUT_TRAIN
+                                                     , numItem=len(names), modelVGG16= modelVGG16, names= names, labels= labels)
 
     '''
         LAY MODEL LSTM DUOC DINH NGHIA,
