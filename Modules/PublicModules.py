@@ -83,7 +83,7 @@ def fun_resizeFrames(frames: list, size: tuple = (224, 224)) -> list:
     return imgs
 
 
-def fun_saveFramesToVideo(frames: list, path: str, fps: int = 25) -> bool:
+def fun_saveFramesToVideo(frames: list, path: str, fps: int = 30) -> bool:
     try:
         height, width, layer = frames[0].shape
         wr = cv2.VideoWriter(path, cv2.VideoWriter_fourcc(*'MJPG'), fps, (width, height))
@@ -102,60 +102,13 @@ def fun_getSizeOfFrame(frame) -> tuple:
     return (width, height)
 
 # version 1
-def fun_outListVideoWithNumFrame(pathVideoLoad: str, dirToSave: str, preFixName: str, videoNameIndex: int= None, countFrame: int = 40, fps: int = 25, isShowCalculating: bool = False) -> int:
-    if videoNameIndex is None:
-        fun_print('fun_outListVideoWithNumFrame', 'Please input para: videoNameIndex')
-        return 0
+def fun_outListVideoWithNumFrame(
+        pathLoad: str,
+        pathSave: str,
+        countFrame: int,
+        fps: int= 30
+):
 
-    all = 0
-    countWriten = 0
-    if isShowCalculating:
-        fun_print('Calculator Video Out Frame', 'calculating...')
-        all = fun_getFramesOfVideo_ALL(pathVideoLoad)
-        all = len(all) // countFrame
-
-    cap = cv2.VideoCapture(pathVideoLoad)
-    isContinue, frame = cap.read()
-    count = videoNameIndex
-    while True:
-        if not isContinue:
-            break
-        nameFile = dirToSave + preFixName + '_out_'+str(count)+'.avi'
-        cFrame = countFrame
-        frames = []
-
-        # get list frame
-        while cFrame > 0:
-            frames.append(frame)
-            isContinue, frame = cap.read()
-            if not isContinue:
-                break
-            cFrame -= 1
-
-        # check video enough frameCount frame ?
-        if len(frames) != countFrame:
-            break
-
-        # write list frame
-        res = fun_saveFramesToVideo(frames=frames, path=nameFile, fps=fps)
-        countWriten += 1
-        if res:
-            if isShowCalculating:
-                percent = countWriten / all
-                mess = '\r - Writen: {0} -> Complete: {1:.1%}'.format(nameFile, percent)
-                sys.stdout.write(mess)
-                sys.stdout.flush()
-            else:
-                mess = '\r - Writen: {0} -> Complete'.format(nameFile)
-                sys.stdout.write(mess)
-                sys.stdout.flush()
-
-        # done
-        count += 1
-
-    cap.release()
-    cv2.destroyAllWindows()
-    return count
 
 def fun_extractZipFile(pathFileZip: str, pathToSave: str) -> None:
     if not os.path.exists(pathToSave):
