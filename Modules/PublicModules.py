@@ -102,13 +102,57 @@ def fun_getSizeOfFrame(frame) -> tuple:
     return (width, height)
 
 # version 1
-def fun_outListVideoWithNumFrame(
-        pathLoad: str,
-        pathSave: str,
-        countFrame: int,
-        fps: int= 30
-):
+def fun_outListVideoWithNumFrame(dirInput: str, fileName: str, dirToSave: str, countFrame: int = 30, fps: int = 30, isShowCalculating: bool = False):
+    all = 0
+    countWriten = 0
 
+    pathVideo = dirInput + '/' + fileName
+    if isShowCalculating:
+        fun_print('Calculator Video Out Frame', 'calculating...')
+        all = fun_getFramesOfVideo_ALL(pathVideo)
+        all = len(all) // countFrame
+
+    cap = cv2.VideoCapture(pathVideo)
+    isContinue, frame = cap.read()
+    count = 1
+    while True:
+        if not isContinue:
+            break
+        nameFile = dirToSave + '/' + fileName[0:len(fileName)-4] + '_[out_large_'+str(count)+'].avi'
+        cFrame = countFrame
+        frames = []
+
+        # get list frame
+        while cFrame > 0:
+            frames.append(frame)
+            isContinue, frame = cap.read()
+            if not isContinue:
+                break
+            cFrame -= 1
+
+        # check video enough frameCount frame ?
+        if len(frames) != countFrame:
+            break
+
+        # write list frame
+        res = fun_saveFramesToVideo(frames=frames, path=nameFile, fps=fps)
+        countWriten += 1
+        if res:
+            if isShowCalculating:
+                percent = countWriten / all
+                mess = '\r - Writen: {0} -> Complete: {1:.1%}'.format(nameFile, percent)
+                sys.stdout.write(mess)
+                sys.stdout.flush()
+            else:
+                mess = '\r - Writen: {0} -> Complete'.format(nameFile)
+                sys.stdout.write(mess)
+                sys.stdout.flush()
+
+        # done
+        count += 1
+
+    cap.release()
+    cv2.destroyAllWindows()
 
 def fun_extractZipFile(pathFileZip: str, pathToSave: str) -> None:
     if not os.path.exists(pathToSave):
