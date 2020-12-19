@@ -1,13 +1,16 @@
 ######################## config ##############################
 
+import tensorflow as tf
 from keras.applications import VGG16
+from tensorflow import keras
 from keras.models import Model
 import numpy as np
 from random import shuffle
 from Modules import PublicModules as lib
 from keras.models import Sequential
-from keras.layers import LSTM, Dense, Activation
+from keras.layers import LSTM, Dense, Activation, Dropout
 import matplotlib.pyplot as plt
+import cv2
 
 DIR_ROOT = ''
 DIR_INPUT_TRAIN = DIR_ROOT + 'Data/Train'
@@ -16,14 +19,24 @@ DIR_INPUT_TEST1 = DIR_ROOT + 'Data/Test1'
 DIR_INPUT_VALIDATION = DIR_ROOT + 'Data/Validation'
 DIR_INPUT_SHOW_VIDEO_TEST = DIR_ROOT + 'Data/ShowVideoTest'
 DIR_INPUT_SHOW_VIDEO_TRAIN = DIR_ROOT + 'Data/ShowVideoTrain'
-DIR_MODEL_LSTM = DIR_ROOT + 'Modules/LSTM_Model.h5'
+DIR_MODEL_LSTM = DIR_ROOT + 'Modules/LSTM_Model__17_12_2020.h5'
 DIR_MODEL_CNN = DIR_ROOT + 'Modules/VGG16_Model.h5'
+DIR_TRANSFER_VALUES_VGG16_MODEL = DIR_ROOT + 'Modules/TransferValuesVGG16.npy'
 SIZE = (224, 224)
 NUM_FRAME_INPUT_LSTM = 20
 TRANSFER_VALUE_SIZE = 4096
-RNN_SIZE = 512
+RNN_SIZE = 600
+DENSE1 = 1024
+DENSE2 = 70
 EPOCH = 400
-BATCH_SIZE = 200
+BATCH_SIZE = 300
+LEARNING_RATE = 0.00001
+# So Luong Validation
+VALID_PERCENT = 0.2
+# % Du lieu de test
+TEST_PERCENT = 0.3
+# K-Folder Validation
+K_FOLD = 10
 
 VIDEO_NAMES = [
     'bc',
@@ -64,11 +77,22 @@ VIDEO_NAMES_DETAIL = [
 ]
 
 VIDEO_LABELS = [
-    [1, 0, 0, 0, 0],
-    [0, 1, 0, 0, 0],
-    [0, 0, 1, 0, 0],
-    [0, 0, 0, 1, 0],
-    [0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
 ]
 
 NUM_CLASSIFY = len(VIDEO_NAMES)
@@ -108,6 +132,19 @@ def fun_getVideoLabelNames_EachFolder(path: str):
     names, labels = zip(*c)
     return names, labels
 
+
+# Loc video
+def fun_locVideoDuFrame(path: str):
+    names, label = fun_getVideoLabelNames_EachFolder(path= path)
+    incree = 1
+    max = len(names)
+    for file in names:
+        frames = lib.fun_getFramesOfVideo_ALL(path= DIR_INPUT_TRAIN + file)
+        if len(frames) < 25:
+            print(file)
+        lib.fun_print_process(count= incree, max= max, mess= 'Filter Frame Count Precess: ')
+        incree += 1
+
 # nem 20 frame hinh vao VGG16 Model
 def fun_getTransferValue(pathVideoOrListFrame, modelVGG16):
     if isinstance(pathVideoOrListFrame, str):
@@ -123,13 +160,63 @@ def fun_getTransferValue(pathVideoOrListFrame, modelVGG16):
     transfer = modelVGG16.predict(frames)
     return transfer
 
+
+# nem 20 frame hinh vao VGG16 Model
+def fun_getTransferValue_EDIT(pathVideoOrListFrame, modelVGG16):
+    images = []
+    if (isinstance(pathVideoOrListFrame, str)):
+        vidcap = cv2.VideoCapture(pathVideoOrListFrame)
+        success, image = vidcap.read()
+        count = 0
+        while count < NUM_FRAME_INPUT_LSTM:
+            try:
+                RGB_img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                res = cv2.resize(RGB_img, dsize=SIZE,
+                                 interpolation=cv2.INTER_CUBIC)
+                images.append(res)
+                success, image = vidcap.read()
+                count += 1
+            except:
+                break
+    else:
+        for image in pathVideoOrListFrame:
+            try:
+                RGB_img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                res = cv2.resize(RGB_img, dsize=SIZE,
+                                 interpolation=cv2.INTER_CUBIC)
+                images.append(res)
+            except:
+                break
+
+    if len(images) != NUM_FRAME_INPUT_LSTM:
+        lib.fun_print(name='Frames count: ' + pathVideoOrListFrame, value=len(images))
+        return None
+    resul = np.array(images)
+    resul = (resul / 255.).astype(np.float16)
+
+    # # Pre-allocate input-batch-array for images.
+    # shape = (NUM_FRAME_INPUT_LSTM,) + SIZE + (3,)
+    #
+    # image_batch = np.zeros(shape=shape, dtype=np.float16)
+    #
+    # image_batch = resul
+    #
+    # # Pre-allocate output-array for transfer-values.
+    # # Note that we use 16-bit floating-points to save memory.
+    # shape = (NUM_FRAME_INPUT_LSTM, TRANSFER_VALUE_SIZE)
+    # transfer_values = np.zeros(shape=shape, dtype=np.float16)
+
+    transfer_values = modelVGG16.predict(resul)
+
+    return transfer_values
+
 # chuan bi tap du lieu + nhan de train lstm
 def fun_getTrainSet_LabelSet(pathVideoOrListFrame: str, numItem: int, modelVGG16, names, labels, mess: str= 'Train'):
     count = 0
     trainSet = []
     labelSet = []
     while count < numItem:
-        itemTrain = fun_getTransferValue(pathVideoOrListFrame=pathVideoOrListFrame + names[count], modelVGG16= modelVGG16)
+        itemTrain = fun_getTransferValue_EDIT(pathVideoOrListFrame=pathVideoOrListFrame + names[count], modelVGG16= modelVGG16)
         itemLable = fun_onesHotLabel(label=labels[count])
 
         trainSet.append(itemTrain)
@@ -141,18 +228,209 @@ def fun_getTrainSet_LabelSet(pathVideoOrListFrame: str, numItem: int, modelVGG16
 
     return trainSet, labelSet
 
+# chuan bi tap du lieu + nhan de train lstm
+def fun_getTrainSet_LabelSet_SaveFile(pathVideoOrListFrame: str, numItem: int, modelVGG16, names, labels, mess: str= 'Train'):
+    count = 0
+    trainSet = []
+    labelSet = []
+    with open(file= DIR_TRANSFER_VALUES_VGG16_MODEL, mode= 'wb') as f:
+        # the first write len dataset
+        np.save(f, np.array(numItem))
+        # write next recode of dataset
+        while count < numItem:
+            itemTrain = fun_getTransferValue_EDIT(pathVideoOrListFrame=pathVideoOrListFrame + names[count], modelVGG16= modelVGG16)
+            itemLable = fun_onesHotLabel(label=labels[count])
+
+            trainSet.append(itemTrain)
+            labelSet.append(itemLable[0])
+
+            np.save(f, itemTrain)
+            np.save(f, itemLable[0])
+
+            lib.fun_print_process(count=count, max=numItem, mess='Video frame throw into VGG16 Model Processing {0}: '.format(mess))
+
+            count += 1
+
+    return trainSet, labelSet
+
+# chuan bi tap du lieu + nhan de train lstm
+def fun_getTrainSet_LabelSet_LoadFile(numItem: int, mess: str= 'Load File: '):
+    count = 0
+    trainSet = []
+    labelSet = []
+    with open(file= DIR_TRANSFER_VALUES_VGG16_MODEL, mode= 'rb') as f:
+        # the first read len dataset
+        np.load(f)
+        # read next recode of dataset
+        while count < numItem:
+            itemTrain = np.load(f)
+            itemLable = np.load(f)
+
+            trainSet.append(itemTrain)
+            labelSet.append(itemLable)
+
+            lib.fun_print_process(count=count, max=numItem, mess='Video frame throw into VGG16 Model Processing {0}: '.format(mess))
+
+            count += 1
+
+    return trainSet, labelSet
+
 # Dinh nghia mang LSTM
-def fun_getModelLSTM(rnn_size: int = 512, input_shape: tuple = (20, 4096), num_classify: int = 3):
+def fun_getModelLSTM(rnn_size: int = RNN_SIZE, input_shape: tuple = (NUM_FRAME_INPUT_LSTM, TRANSFER_VALUE_SIZE), num_classify: int = NUM_CLASSIFY):
     modelLSTM = Sequential()
     modelLSTM.add(LSTM(rnn_size, input_shape=input_shape))
-    modelLSTM.add(Dense(1024))
+    modelLSTM.add(Dense(DENSE1))
     modelLSTM.add(Activation('relu'))
-    modelLSTM.add(Dense(50))
+    modelLSTM.add(Dense(DENSE2))
     modelLSTM.add(Activation('sigmoid'))
     modelLSTM.add(Dense(num_classify))
     modelLSTM.add(Activation('softmax'))
     modelLSTM.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
+
     return modelLSTM
+
+# Dinh nghia mang LSTM 2
+def fun_getModelLSTM_2(rnn_size: int = RNN_SIZE, input_shape: tuple = (NUM_FRAME_INPUT_LSTM, TRANSFER_VALUE_SIZE), num_classify: int = NUM_CLASSIFY):
+  modelLSTM = Sequential()
+  modelLSTM.add(LSTM(rnn_size, input_shape= input_shape))
+  modelLSTM.add(Dense(DENSE1))
+  modelLSTM.add(Activation('relu'))
+  modelLSTM.add(Dense(DENSE2))
+  modelLSTM.add(Activation('sigmoid'))
+  modelLSTM.add(Dense(num_classify))
+  modelLSTM.add(Activation('softmax'))
+
+  opt = keras.optimizers.Adam(learning_rate= LEARNING_RATE)
+  modelLSTM.compile(loss='mean_squared_error', optimizer=opt, metrics=['accuracy'])
+
+  return modelLSTM
+
+# Dinh nghia mang LSTM 5
+def fun_getModelLSTM_5(rnn_size: int = RNN_SIZE, input_shape: tuple = (NUM_FRAME_INPUT_LSTM, TRANSFER_VALUE_SIZE), num_classify: int = NUM_CLASSIFY):
+  modelLSTM = Sequential()
+  modelLSTM.add(LSTM(1024, input_shape=input_shape))
+  modelLSTM.add(Dense(200))
+  modelLSTM.add(Activation('relu'))
+  modelLSTM.add(Dense(50))
+  modelLSTM.add(Activation('sigmoid'))
+  modelLSTM.add(Dense(num_classify))
+  modelLSTM.add(Activation('softmax'))
+
+  opt = keras.optimizers.Adam(learning_rate=LEARNING_RATE)
+  modelLSTM.compile(loss='mean_squared_error', optimizer=opt, metrics=['accuracy'])
+
+  return modelLSTM
+
+  # Dinh nghia mang LSTM 6
+def fun_getModelLSTM_6(rnn_size: int = RNN_SIZE, input_shape: tuple = (NUM_FRAME_INPUT_LSTM, TRANSFER_VALUE_SIZE), num_classify: int = NUM_CLASSIFY):
+  modelLSTM = Sequential()
+  modelLSTM.add(LSTM(200, input_shape= input_shape))
+  modelLSTM.add(Dense(1024, activation='relu'))
+  modelLSTM.add(Dropout(.5))
+  modelLSTM.add(Dense(512, activation='relu'))
+  modelLSTM.add(Dropout(.5))
+  modelLSTM.add(Dense(128, activation='relu'))
+  modelLSTM.add(Dropout(.5))
+  modelLSTM.add(Dense(64, activation='sigmoid'))
+  modelLSTM.add(Dense(num_classify, activation='softmax'))
+
+  opt = keras.optimizers.Adam(learning_rate= LEARNING_RATE)
+  modelLSTM.compile(loss='mean_squared_error', optimizer=opt, metrics=['accuracy'])
+
+  return modelLSTM
+
+# bat dau cong viec train lstm percent
+def fun_START_TRAINT_LSTM_PERCENT(modelLSTM, trainSet, labelSet):
+    lenValid = int(VALID_PERCENT * len(trainSet))
+
+    # Init Valid
+    valSet = trainSet[0:lenValid]
+    valLabelSet = labelSet[0:lenValid]
+    # Init Train
+    trainSet = trainSet[lenValid:]
+    labelSet = labelSet[lenValid:]
+    print('Len Validation: ' + str(len(valSet)))
+    input('any: ')
+    print('Len Train: ' + str(len(trainSet)))
+    input('any: ')
+    history = modelLSTM.fit(np.array(trainSet), np.array(labelSet), epochs=EPOCH,
+                        validation_data=(np.array(valSet), np.array(valLabelSet)),
+                        batch_size=BATCH_SIZE, verbose=2)
+    lib.fun_print(name= 'LSTM Train', value= 'Train Finish!')
+    return history
+
+def get_model_name(k):
+    return 'Modules/K_model_'+str(k)+'.h5'
+
+def fun_mergeArray(arr1, arr2):
+    res = []
+    for x in arr1:
+        res.append(x)
+    for x in arr2:
+        res.append(x)
+    return res
+
+def fun_START_TRAINT_LSTM_PERCENT_K_Fold(modelLSTM, trainSet, labelSet, testSet, testLabelSet):
+    history = None
+    VALIDATION_ACCURACY = []
+    VALIDATION_LOSS = []
+
+    max = len(trainSet)
+    index = max // K_FOLD
+    for k in range(0, K_FOLD):
+        start = index * k
+        end = start + index
+
+        # Anh xa validation
+        _valSet = trainSet[start:end]
+        _valLabelSet = labelSet[start:end]
+
+        # Phan con lai de train
+        _trainLeft = trainSet[0:start]
+        _trainRight = trainSet[end:max]
+        _trainFOLD = fun_mergeArray(_trainLeft, _trainRight)
+
+        _labelLeft = labelSet[0:start]
+        _labelRight = labelSet[end:max]
+        _labelFOLD = fun_mergeArray(_labelLeft, _labelRight)
+
+        lib.fun_print(name= 'Train fold {0}'.format(k), value= 'valid: {0}, train: {1}'.format(len(_valSet), len(_trainFOLD)))
+
+        # Bat dau train
+        # create callback
+        checkpoint = tf.keras.callbacks.ModelCheckpoint(filepath=get_model_name(k),
+                                                        monitor='val_accuracy', verbose=1,
+                                                        save_best_only=True, mode='max')
+        callbacks_list = [checkpoint]
+
+        history = modelLSTM.fit(np.array(_trainFOLD), np.array(_labelFOLD), epochs=EPOCH,
+                                validation_data=(np.array(_valSet), np.array(_valLabelSet)),
+                                callbacks=callbacks_list,
+                                batch_size=BATCH_SIZE, verbose=2)
+
+        '''
+            HIEN THI BIEU DO HOI TU
+        '''
+        fun_showAnalysis(history=history)
+
+        '''
+            DU DOAN % DO CHINH XAC,
+            - Thu muc test tai: Data/Test/
+        '''
+        fun_evaluate(modelLSTM=modelLSTM, testSet=testSet, testLabelSet=testLabelSet)
+
+        # PLOT HISTORY# :# :# LOAD BEST MODEL to evaluate the performance of the model
+        modelLSTM.load_weights(get_model_name(k))
+        # evaluate
+        results = modelLSTM.evaluate(np.array(_valSet), np.array(_valLabelSet))
+        results = dict(zip(modelLSTM.metrics_names, results))
+        VALIDATION_ACCURACY.append(results['accuracy'])
+        VALIDATION_LOSS.append(results['loss'])
+        tf.keras.backend.clear_session()
+
+    print(VALIDATION_ACCURACY)
+    print(VALIDATION_LOSS)
+    return history
 
 # bat dau cong viec train lstm
 def fun_START_TRAINT_LSTM(modelVGG16, modelLSTM, trainSet, labelSet):
