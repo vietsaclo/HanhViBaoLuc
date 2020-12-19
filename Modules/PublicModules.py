@@ -95,6 +95,7 @@ def fun_saveFramesToVideo(frames: list, path: str, fps: int = 30) -> bool:
 
     except:
         fun_print(name='Write Video: '+path, value='ERROR TO WRITE VIDEO')
+        cv2.destroyAllWindows()
         return False
 
 def fun_getSizeOfFrame(frame) -> tuple:
@@ -102,7 +103,7 @@ def fun_getSizeOfFrame(frame) -> tuple:
     return (width, height)
 
 # version 1
-def fun_outListVideoWithNumFrame(dirInput: str, fileName: str, dirToSave: str, countFrame: int = 30, fps: int = 30, isShowCalculating: bool = False):
+def fun_outListVideoWithNumFrame(dirInput: str, fileName: str, dirToSave: str, countFrame: int = 30, fps: int = 30, isShowCalculating: bool = False, isResize: bool= False):
     all = 0
     countWriten = 0
 
@@ -135,6 +136,8 @@ def fun_outListVideoWithNumFrame(dirInput: str, fileName: str, dirToSave: str, c
             break
 
         # write list frame
+        if isResize:
+            frames = fun_resizeFrames(frames= frames)
         res = fun_saveFramesToVideo(frames=frames, path=nameFile, fps=fps)
         countWriten += 1
         if res:
@@ -186,3 +189,8 @@ def fun_makeCenter(win):
     y = win.winfo_screenheight() // 2 - win_height // 2
     win.geometry('{}x{}+{}+{}'.format(width, height, x, y))
     win.deiconify()
+
+def fun_makeMaximumSize(root):
+    # w, h = root.winfo_screenwidth(), root.winfo_screenheight()
+    # root.geometry("%dx%d+0+0" % (w, h))
+    root.state('zoomed')

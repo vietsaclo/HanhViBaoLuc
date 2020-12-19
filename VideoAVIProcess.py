@@ -1,15 +1,15 @@
 from Modules import PublicModules as lib
 import os
 
-SO_LAN_CAT_VIDEO = '4'
-ID_NGUOICAT = '14'
+SO_LAN_CAT_VIDEO = '7'
+ID_NGUOICAT = '1'
 
-DIR_INPUT = 'G:\\TongHopDataKhoaLuan\\4_TMP\\out_video'
-DIR_INPUT_LARGE = 'G:\\TongHopDataKhoaLuan\\3_KetQuaChuanHoa\\out_video_large'
+DIR_INPUT = 'D:/[KhoaLuan] Violence Detection/SuuTam/cqa_Lan2_001_out'
+DIR_INPUT_LARGE = 'F:/TongHopDataKhoaLuan/1_ThuCong/Lan7/NguyenCongTanLan7/video'
 DIR_INPUT_VDGOC = 'D:\\[LuanAn_BaoLuc2]\\4_TMP\\NguyenVanHieuLan1\\video'
 
-DIR_OUTPUT = 'G:\\TongHopDataKhoaLuan\\3_KetQuaChuanHoa\\out_video'
-DIR_OUTPUT_LARGE = 'G:\\TongHopDataKhoaLuan\\3_KetQuaChuanHoa\\out_video_large'
+DIR_OUTPUT = 'F:/TongHopDataKhoaLuan/1_ThuCong/Lan7/NguyenCongTanLan7/out_tmp'
+DIR_OUTPUT_LARGE = 'F:/TongHopDataKhoaLuan/3_KetQuaChuanHoa/out_video_large'
 DIR_OUTPUT_VDGOC = 'D:\\[LuanAn_BaoLuc2]\\3_KetQuaChuanHoa\\video_goc'
 
 DEFAULT_SIZE_VIDEO = (224, 224)
@@ -128,7 +128,7 @@ def fun_danhLaiIDChoVideo(DIR_INPUT: str, DIR_OUTPUT: str, DIR_OUTPUT_LARGE: str
 
     # ID = START_ID
     filesName = lib.fun_getFileNames(path=DIR_INPUT)
-    count = 0  # For calculator progress
+    count = 1  # For calculator progress
     max = len(filesName)  # For calculator progress
     for file in filesName:
         HD = fun_getHanhDong(videoName=file)  # HD = Hanh Dong contain[da, dn, nt...]
@@ -181,7 +181,7 @@ def fun_read_START_ID(path: str) -> int:
         file.close()
         return id
     except:
-        lib.fun_print(name='read file: ' + path, value='Error To Read File from path!')
+        lib.fun_print(name='read file: ' + path, value='Error To Read FileInput from path!')
         return -1
 
 
@@ -192,23 +192,119 @@ def fun_write_START_ID(path: str, START_ID) -> bool:
         file.close()
         return True
     except:
-        lib.fun_print(name='Write file: ' + path, value='Error To Write File from path!')
+        lib.fun_print(name='Write file: ' + path, value='Error To Write FileInput from path!')
         return False
 
+
+def fun_resizeVideos(pathLoad: str, dirSave: str, size: tuple = (224, 224)):
+    count = 1000
+    max = 1832
+    filenames = lib.fun_getFileNames(path=pathLoad)
+    for file in filenames:
+        frames = lib.fun_getFramesOfVideo_ALL(path=pathLoad + '/' + file)
+
+        frames = lib.fun_resizeFrames(frames=frames, size=size)
+        fileSave = '{0}.avi'.format(count)
+        isSave = lib.fun_saveFramesToVideo(frames=frames, path=dirSave + '/' + fileSave)
+        if isSave:
+            count += 1
+        lib.fun_print_process(count=count, max=max, mess='Resize Video Processing: ')
+
+
+def fun_renameFiles(pathLoad: str):
+    count = 1000
+    max = 1832
+    filenames = lib.fun_getFileNames(path=pathLoad)
+    for file in filenames:
+        fileSave = '{0}.avi'.format(count)
+        os.renames(old=pathLoad + '/' + file, new=pathLoad + '/' + fileSave)
+        count += 1
+        lib.fun_print_process(count=count, max=max, mess='Rename Video Processing: ')
+
+
+def fun_getVideoNameOriganal(nameVideoOut: str):
+    start = nameVideoOut.find('_')
+    end = nameVideoOut.rfind('_')
+    return nameVideoOut[start + 1:end]
+
+
+def fun_mapTimeToFrameIndex(time: str):
+    times = time.split(':')
+    index = int(times[1]) * 1800 + int(times[2]) * 30 + int(times[3])
+    return index
+
+
+def autoCutVideo(dirInput: str ,pathSave: str, fps: int = 30):
+    file = open(file='FileInput/input.txt', mode='r')
+    incree = 1
+    recored = file.readlines()
+    max = len(recored)
+    old = ''
+    frames = []
+    for line in recored:
+        if line is None:
+            break
+        full = line.split(';')
+        name = full[0]
+        time = full[1]
+        nameOriganal = fun_getVideoNameOriganal(nameVideoOut=name)
+        index = fun_mapTimeToFrameIndex(time=time)
+        path = '{0}/{1}.avi'.format(dirInput, nameOriganal)
+        if old != nameOriganal:
+            old = nameOriganal
+            frames = lib.fun_getFramesOfVideo_ALL(path=path)
+        isSave = lib.fun_saveFramesToVideo(frames= frames[index:index+30],path='{0}/{1}.avi'.format(pathSave, name), fps= 30)
+        if not isSave:
+            lib.fun_print('save video: {0}'.format(name), value= 'Error')
+        lib.fun_print_process(count= incree, max= max, mess= 'Video Auto Cut Processing: ')
+        incree += 1
+
+    file.close()
+
+def fun_renameVideoOut(pathLoad: str):
+    incree = 1
+    filenames = lib.fun_getFileNames(path=pathLoad)
+    max = len(filenames)
+    for file in filenames:
+        HD = fun_getHanhDong(videoName= file)
+        ID = fun_getID(videoName= file)
+        TENVID = fun_getVideoName(videoName= file)
+        replace = '{0}_{1}_{2}_{3}.avi'.format(HD, ID, SO_LAN_CAT_VIDEO, TENVID)
+        os.replace(src= pathLoad + '\\' + file, dst= pathLoad + '\\' + replace)
+        lib.fun_print_process(count=incree, max=max, mess='Rename Video Processing: ')
+        incree += 1
+
+def fun_TMP_Rename(dirInput: str):
+    fileNames = lib.fun_getFileNames(path= dirInput)
+    for file in fileNames:
+        hd = file[0:2]
+        name = file[2:]
+        name = hd + '8_7_' + name
+        os.renames(old= dirInput + '/' + file, new= dirInput + '/' + name)
 
 if __name__ == '__main__':
     # fun_danhLaiIDChoVideoGoc(DIR_INPUT=DIR_INPUT_VDGOC, DIR_OUTPUT=DIR_OUTPUT_VDGOC)
     # fun_danhLaiIDChoVideo(DIR_INPUT=DIR_INPUT, DIR_OUTPUT=DIR_OUTPUT, DIR_OUTPUT_LARGE=DIR_OUTPUT_LARGE, IS_RESIZE=True)
 
-    filesLarge = lib.fun_getFileNames(path= DIR_INPUT_LARGE)
-    max = len(filesLarge)
-    count = 0
-    for file in filesLarge:
-        lib.fun_outListVideoWithNumFrame(
-            dirInput=DIR_INPUT_LARGE,
-            fileName=file,
-            dirToSave=DIR_OUTPUT,
-            isShowCalculating=True,
-        )
-        count += 1
-        lib.fun_print_process(count= count, max= max, mess= 'ALL PROCESS: ')
+    # filesLarge = lib.fun_getFileNames(path= DIR_INPUT_LARGE)
+    # max = len(filesLarge)
+    # count = 1
+    # for file in filesLarge:
+    #     lib.fun_outListVideoWithNumFrame(
+    #         dirInput=DIR_INPUT_LARGE,
+    #         fileName=file,
+    #         dirToSave=DIR_OUTPUT,
+    #         isShowCalculating=True,
+    #         isResize= False
+    #     )
+    #     count += 1
+    #     lib.fun_print_process(count= count, max= max, mess= 'ALL PROCESS: ')
+
+    # fun_resizeVideos(pathLoad= 'D:/[KhoaLuan] Violence Detection/SuuTam/QuayClipLanCuoi', dirSave= 'D:/[KhoaLuan] Violence Detection/SuuTam/QuayClipLanCuoi_Resize')
+    # fun_renameFiles(pathLoad= 'D:/[KhoaLuan] Violence Detection/SuuTam/QuayClipLanCuoi_Resize')
+    # autoCutVideo(dirInput= 'F:/TongHopDataKhoaLuan/1_ThuCong/Lan7/NguyenCongTanLan7/video',
+    # pathSave= 'F:/TongHopDataKhoaLuan/1_ThuCong/Lan7/NguyenCongTanLan7/out_tmp')
+
+    # fun_renameVideoOut(pathLoad= DIR_INPUT)
+
+    fun_TMP_Rename(dirInput= 'F:/TongHopDataKhoaLuan/1_ThuCong/Lan6/NgoHuyThangLan6-001/video_out')

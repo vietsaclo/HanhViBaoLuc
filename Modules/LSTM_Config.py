@@ -26,19 +26,41 @@ EPOCH = 400
 BATCH_SIZE = 200
 
 VIDEO_NAMES = [
+    'bc',
+    'cq',
     'da',
     'dn',
+    'kc',
+    'lg',
+    'lk',
+    'na',
+    'ne',
     'nt',
+    'tc',
+    'vk',
     'xd',
-    'xt'
+    'xt',
+    'kc',
+    'om'
 ]
 
 VIDEO_NAMES_DETAIL = [
-    'Da',
-    'Danh Tat',
-    'Nam Toc',
-    'Xo Day',
-    'Xi Tay'
+    'bc',
+    'cq',
+    'da',
+    'dn',
+    'kc',
+    'lg',
+    'lk',
+    'na',
+    'ne',
+    'nt',
+    'tc',
+    'vk',
+    'xd',
+    'xt',
+    'kc',
+    'om'
 ]
 
 VIDEO_LABELS = [
