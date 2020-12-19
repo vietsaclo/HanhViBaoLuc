@@ -153,7 +153,7 @@ class ChoseSourceWindow:
             url = self.fun_getURL_IPCam(ip=self.tbSource.get())
         else:
             self.RETURN_RESULT = filedialog.askopenfilename(initialdir="/", title="Select file",
-                                                            filetypes=(("AVI files", "*.avi"), ("MP4 files", "*.mp4")))
+                                                            filetypes=(("AVI files", "*.avi"), ("MP4 files", "*.mp4"), ("ALL files", "*.*")))
             self.fun_reloadHolderSource(source=self.RETURN_RESULT)
             url = self.RETURN_RESULT
 
@@ -188,8 +188,8 @@ class MyApp:
 
     def initComponent(self):
         #
-        self.containerTrai = Frame(self.root, bg='#ffb0b0', padx=10, pady=10)
-        self.containerPhai = Frame(self.root, bg='#d6ff85', padx=10, pady=10)
+        self.containerTrai = Frame(self.root, bg='white', padx=10, pady=10)
+        self.containerPhai = Frame(self.root, bg='white', padx=10, pady=10)
 
         self.containerTrai.grid(row=0, column=0, sticky='nsew')
         self.containerPhai.grid(row=0, column=1, sticky='nsew')
@@ -199,9 +199,9 @@ class MyApp:
         self.root.grid_rowconfigure(0, weight=1)
 
         # Container con cua trai
-        self.containerChonNguonDuLieu = Frame(self.containerTrai, bg='#1094ff', padx=10, pady=10)
-        self.containerVideoCamera = Frame(self.containerTrai, bg='#8594ff', padx=10, pady=10)
-        self.containerChucNang = Frame(self.containerTrai, bg='#ff85e5', padx=10, pady=10)
+        self.containerChonNguonDuLieu = Frame(self.containerTrai, bg='#95deff', padx=10, pady=10)
+        self.containerVideoCamera = Frame(self.containerTrai, bg='#c1ffe5', padx=10, pady=10)
+        self.containerChucNang = Frame(self.containerTrai, bg='#f7b5c7', padx=10, pady=10)
 
         self.containerChonNguonDuLieu.grid(row=0, column=0, sticky='nsew')
         self.containerVideoCamera.grid(row=1, column=0, sticky='nsew')
@@ -267,8 +267,8 @@ class MyApp:
         self.containerChonNguonDuLieu.grid_rowconfigure(0, weight=1)
 
         # Container con cua phai
-        self.containerPhanDoanBaoLuc = Frame(self.containerPhai, bg='#9d85ff', padx=10, pady=10)
-        self.containerTongHopMoTaPhanDoanDanh = Frame(self.containerPhai, bg='#94dcc1', padx=10, pady=10)
+        self.containerPhanDoanBaoLuc = Frame(self.containerPhai, bg='#95deff', padx=10, pady=10)
+        self.containerTongHopMoTaPhanDoanDanh = Frame(self.containerPhai, bg='#c1ffe5', padx=10, pady=10)
 
         self.containerPhanDoanBaoLuc.grid(row=0, column=0, sticky='nsew')
         self.containerTongHopMoTaPhanDoanDanh.grid(row=1, column=0, sticky='nsew')
@@ -278,7 +278,7 @@ class MyApp:
         self.containerPhai.grid_columnconfigure(0, weight=1)
 
         # Container con cua ContainerVideoFrames
-        self.lbVideoFrames = Label(self.containerVideoCamera, bg='red', padx=10, pady=10)
+        self.lbVideoFrames = Label(self.containerVideoCamera, bg='white', padx=10, pady=10)
         self.lbVideoFrames.grid(row=0, column=0, sticky='nsew')
 
         self.containerVideoCamera.grid_rowconfigure(0, weight=1)
@@ -288,11 +288,27 @@ class MyApp:
 
         # self.videoLoadingThreading()
         self.root.wm_protocol('VM_DELETE_WINDOW', self.onClose)
+        self.fun_initGUI()
+        self.fun_taiGiaoDien17CapDo()
+
+    def fun_initGUI(self):
+        img = cv2.imread(filename= 'FileInput/Imgs/ImgNotFound2.jpg')
+        img1 = cv2.imread(filename= 'FileInput/Imgs/ImgNotFound.jpg')
+        size = libs.fun_getSizeOfFrame(frame= img)
+        size1 = libs.fun_getSizeOfFrame(frame= img1)
+        self.imgNotFound = self.fun_cv2_imageArrayToImage(containerFather= self.containerVideoCamera, frame= img, reSize= size)
+        self.imgNotFound1 = self.fun_cv2_imageArrayToImage(containerFather= self.containerVideoCamera, frame= img1, reSize= (int(size[0] * 0.2), int(size[1] * 0.2)))
+        self.lbVideoFrames.config(image= self.imgNotFound)
+        self.lbVideoFrames1.config(image= self.imgNotFound1)
+        self.lbVideoFrames2.config(image= self.imgNotFound1)
+        self.lbVideoFrames3.config(image= self.imgNotFound1)
+        self.lbVideoFrames4.config(image= self.imgNotFound1)
 
     def fun_ngatKetNoi(self):
         if self.stopEvent is None:
             return
         self.stopEvent.set()
+        self.fun_initGUI()
 
     def fun_taiLaiVideo(self):
         self.btnRefresh.config(state='disable', cursor=CURSOR_NO)
@@ -319,6 +335,7 @@ class MyApp:
         self.lbKetQuaBaoLuc = Label(self.containerTongHopMoTaPhanDoanDanh,
                                     text='Khong Co Bao Luc', padx=10,
                                     pady=10,
+                                    bg='white',
                                     font=('Helvetica', 18, 'bold')
                                     )
         self.lbKetQuaBaoLuc.grid(row=0, column=0, sticky='nsew')
@@ -341,10 +358,10 @@ class MyApp:
         self.videoLoadingThreading()
 
     def makePhanDoanBaoLucGUI6(self):
-        self.frameVideo1 = Frame(self.containerPhanDoanBaoLuc, padx=10, pady=10, bg='#c097ea')
-        self.frameVideo2 = Frame(self.containerPhanDoanBaoLuc, padx=10, pady=10, bg='#8593d8')
-        self.frameVideo3 = Frame(self.containerPhanDoanBaoLuc, padx=10, pady=10, bg='#8593d8')
-        self.frameVideo4 = Frame(self.containerPhanDoanBaoLuc, padx=10, pady=10, bg='#c097ea')
+        self.frameVideo1 = Frame(self.containerPhanDoanBaoLuc, padx=10, pady=10, bg='white')
+        self.frameVideo2 = Frame(self.containerPhanDoanBaoLuc, padx=10, pady=10, bg='#c1ffe5')
+        self.frameVideo3 = Frame(self.containerPhanDoanBaoLuc, padx=10, pady=10, bg='#c1ffe5')
+        self.frameVideo4 = Frame(self.containerPhanDoanBaoLuc, padx=10, pady=10, bg='white')
 
         self.frameVideo1.grid(row=0, column=0, sticky='nsew')
         self.frameVideo2.grid(row=0, column=1, sticky='nsew')
@@ -357,25 +374,25 @@ class MyApp:
         self.containerPhanDoanBaoLuc.grid_columnconfigure(1, weight=1)
 
         # phan doan 1
-        self.lbVideoFrames1 = Label(self.frameVideo1, padx=10, pady=10, bg='gray')
+        self.lbVideoFrames1 = Label(self.frameVideo1, padx=10, pady=10, bg='white')
         self.lbVideoFrames1.grid(row=0, column=0, sticky='nsew')
         self.frameVideo1.grid_rowconfigure(0, weight=1)
         self.frameVideo1.grid_columnconfigure(0, weight=1)
 
         # phan doan 2
-        self.lbVideoFrames2 = Label(self.frameVideo2, padx=10, pady=10, bg='blue')
+        self.lbVideoFrames2 = Label(self.frameVideo2, padx=10, pady=10, bg='white')
         self.lbVideoFrames2.grid(row=0, column=0, sticky='nsew')
         self.frameVideo2.grid_rowconfigure(0, weight=1)
         self.frameVideo2.grid_columnconfigure(0, weight=1)
 
         # phan doan 3
-        self.lbVideoFrames3 = Label(self.frameVideo3, padx=10, pady=10, bg='brown')
+        self.lbVideoFrames3 = Label(self.frameVideo3, padx=10, pady=10, bg='white')
         self.lbVideoFrames3.grid(row=0, column=0, sticky='nsew')
         self.frameVideo3.grid_rowconfigure(0, weight=1)
         self.frameVideo3.grid_columnconfigure(0, weight=1)
 
         # phan doan 4
-        self.lbVideoFrames4 = Label(self.frameVideo4, padx=10, pady=10, bg='purple')
+        self.lbVideoFrames4 = Label(self.frameVideo4, padx=10, pady=10, bg='white')
         self.lbVideoFrames4.grid(row=0, column=0, sticky='nsew')
         self.frameVideo4.grid_rowconfigure(0, weight=1)
         self.frameVideo4.grid_columnconfigure(0, weight=1)
@@ -407,12 +424,7 @@ class MyApp:
         xoayVong = 0
         frames = []
         while not self.stopEvent.is_set() and self.isContinue:
-            winWidth = int(self.containerVideoCamera.winfo_width() * 0.9)
-            winHeight = int(self.containerVideoCamera.winfo_height() * 0.9)
-            self.frame = cv2.resize(self.frame, dsize=(winWidth, winHeight))
-            image = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
-            image = Image.fromarray(image)
-            image = ImageTk.PhotoImage(image)
+            image = self.fun_cv2_imageArrayToImage(containerFather= self.containerVideoCamera, frame= self.frame.copy())
 
             self.lbVideoFrames.config(image=image)
             self.lbVideoFrames.image = image
@@ -444,6 +456,17 @@ class MyApp:
         self.root.destroy()
         sys.exit(0)
 
+    def fun_cv2_imageArrayToImage(self, containerFather, frame, reSize=None):
+        if reSize is None:
+            winWidth = int(containerFather.winfo_width() * 0.9)
+            winHeight = int(containerFather.winfo_height() * 0.9)
+            frame = cv2.resize(frame, dsize=(winWidth, winHeight))
+        else:
+            frame = cv2.resize(frame, dsize= reSize)
+        image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        image = Image.fromarray(image)
+        image = ImageTk.PhotoImage(image)
+        return image
 
 if __name__ == '__main__':
     if IS_USING_WEBCAM:

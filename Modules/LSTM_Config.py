@@ -47,14 +47,14 @@ VIDEO_NAMES = [
     'lg',
     'lk',
     'na',
+    'nc',
     'ne',
     'nt',
+    'om',
     'tc',
-    'vk',
+    'vd',
     'xd',
-    'xt',
-    'kc',
-    'om'
+    'xt'
 ]
 
 VIDEO_NAMES_DETAIL = [
@@ -66,14 +66,14 @@ VIDEO_NAMES_DETAIL = [
     'lg',
     'lk',
     'na',
+    'nc',
     'ne',
     'nt',
+    'om',
     'tc',
-    'vk',
+    'vd',
     'xd',
-    'xt',
-    'kc',
-    'om'
+    'xt'
 ]
 
 VIDEO_LABELS = [
