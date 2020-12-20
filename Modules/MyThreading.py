@@ -3,11 +3,16 @@ import cv2
 import threading
 from PIL import Image
 from PIL import ImageTk
+from Modules import PublicModules as libs
+from Modules import LSTM_Config as cf
 
 class MyThreadingVideo:
-    def __init__(self, lbShow, lbFather):
+    def __init__(self, lbShow, lbFather, lbShowKetQua, vgg16_model, lstm_model):
+        self.vgg16_model = vgg16_model
+        self.lstm_model = lstm_model
         self.frames = None
         self.lbShow = lbShow
+        self.lbShowKetQua = lbShowKetQua
         self.lbFather = lbFather
         self.myThread = threading.Thread(target=self.VideoThread)
         self.myThread.setDaemon(True)
@@ -25,14 +30,16 @@ class MyThreadingVideo:
 
     def VideoThread(self):
         # Predict cho moi 20Frames Anh tai day
+        transfer = cf.fun_getTransferValue_EDIT(pathVideoOrListFrame= self.frames, modelVGG16= self.vgg16_model)
+        pre, real = libs.fun_predict(modelLSTM= self.lstm_model, transferValue=transfer)
+        conv = cf.VIDEO_NAMES_DETAIL[pre] if real > 0.7 else 'NO'
+        text = 'Predict: {0} -> Real: [ {1} ]'.format(conv, real)
 
+        # Show thread video
         for frame in self.frames:
-            winWidth = int(self.lbFather.winfo_width() * 0.8)
-            winHeight = int(self.lbFather.winfo_height() * 0.8)
-            frame = cv2.resize(frame, (winWidth, winHeight))
-            image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            image = Image.fromarray(image)
-            image = ImageTk.PhotoImage(image)
+            image = libs.fun_cv2_imageArrayToImage(containerFather= self.lbFather, frame= frame.copy(), reSize= 0.8)
             self.lbShow.config(image= image)
             self.lbShow.image = image
-            # time.sleep(0.02)
+            
+        
+        self.lbShowKetQua.config(text= 'kq: '+str(self.myThread.name) + '-> ' + text)
