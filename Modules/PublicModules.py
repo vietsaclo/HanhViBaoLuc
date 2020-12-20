@@ -2,6 +2,9 @@ import os
 import cv2
 import sys
 import zipfile
+from PIL import Image
+from PIL import ImageTk
+import numpy as np
 
 def fun_print(name: str, value) -> None:
     print('@ Deep Learning> ', name)
@@ -194,3 +197,30 @@ def fun_makeMaximumSize(root):
     # w, h = root.winfo_screenwidth(), root.winfo_screenheight()
     # root.geometry("%dx%d+0+0" % (w, h))
     root.state('zoomed')
+
+def fun_cv2_imageArrayToImage(containerFather, frame, reSize=None):
+    if reSize is None:
+        winWidth = int(containerFather.winfo_width() * 0.9)
+        winHeight = int(containerFather.winfo_height() * 0.9)
+        frame = cv2.resize(frame, dsize=(winWidth, winHeight))
+    elif isinstance(reSize, float):
+        winWidth = int(containerFather.winfo_width() * reSize)
+        winHeight = int(containerFather.winfo_height() * reSize)
+        frame = cv2.resize(frame, dsize=(winWidth, winHeight))
+    else:
+        frame = cv2.resize(frame, dsize= reSize)
+    image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    image = Image.fromarray(image)
+    image = ImageTk.PhotoImage(image)
+    return image
+
+def fun_predict(modelLSTM, transferValue, isPrint: bool= False):
+    arrPre = []
+    arrPre.append(transferValue)
+    Real = modelLSTM.predict(np.array(arrPre))
+    pre = np.argmax(Real)
+
+    if isPrint:
+      print(Real, pre)
+      print('\r')
+    return pre, Real[0][pre]

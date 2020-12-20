@@ -55,8 +55,8 @@ class ChoseSourceWindow:
         libs.fun_makeCenter(self.master)
         self.DIALOG_OK = False
         self.RETURN_RESULT = 'NULL'
-        self.iconCheck= PhotoImage(file='FileInput/Icons/ic_check.png').subsample(3, 3)
-        self.iconMp4 = PhotoImage(file='FileInput/Icons/ic_mp4.png').subsample(3, 3)
+        self.iconCheck= PhotoImage(file='FileInput/Icons/ic_check2.png').subsample(3, 3)
+        self.iconMp4 = PhotoImage(file='FileInput/Icons/ic_check2.png').subsample(3, 3)
 
         # goi sau cung nhe
         self.fun_initComponent()
@@ -67,9 +67,9 @@ class ChoseSourceWindow:
         self.master.grid_rowconfigure(0, weight=1)
 
         # frame 1
-        self.frame1 = Frame(self.frame, bg='#ffb0b0', padx=10, pady=10)
-        self.frame2 = Frame(self.frame, bg='#ffb9b9', padx=10, pady=10)
-        self.frame3 = Frame(self.frame, bg='#aab0b0', padx=10, pady=10)
+        self.frame1 = Frame(self.frame, bg='#95deff', padx=10, pady=10)
+        self.frame2 = Frame(self.frame, bg='#c1ffe5', padx=10, pady=10)
+        self.frame3 = Frame(self.frame, bg='#f7b5c7', padx=10, pady=10)
 
         self.frame1.grid(row=0, column=0, sticky='nsew')
         self.frame2.grid(row=1, column=0, sticky='nsew')
@@ -80,7 +80,7 @@ class ChoseSourceWindow:
         self.frame.grid_rowconfigure(1, weight=1)
         self.frame.grid_rowconfigure(2, weight=1)
 
-        self.checkDir = Checkbutton(self.frame1, text='Load Video From Source',
+        self.checkDir = Checkbutton(self.frame1, text='VIDEO FROM DISK...',
                                     variable=self.isUsingIpWebcam, command=self.fun_CheckIsUsingCamChange,
                                     padx=10, pady=10,
                                     font=('Helvetica', 18, 'bold'),
@@ -90,13 +90,14 @@ class ChoseSourceWindow:
         self.frame1.grid_rowconfigure(0, weight=1)
         self.frame1.grid_columnconfigure(0, weight=1)
 
-        self.tbSource = EntryWithPlaceholder(self.frame2, 'IP Webcam (etc... 192.168.1.1)')
+        self.tbSource = EntryWithPlaceholder(self.frame2, 'IP WEBCAM EXAMPLE: 192.168.1.1')
         self.tbSource.grid(row=0, column=0, sticky='nsew')
 
         self.btnSource = Button(self.frame2,
                                 command=self.btnGetPathFromSourceClicked, cursor=CURSOR_DF,
                                 image= self.iconCheck,
-                                compound= CENTER
+                                compound= CENTER,
+                                bg='#c1ffe5'
                                 )
         self.btnSource.grid(row=0, column=1, sticky='nsew')
 
@@ -116,12 +117,12 @@ class ChoseSourceWindow:
     def fun_CheckIsUsingCamChange(self):
         if self.isUsingIpWebcam.get() == 0:
             self.btnSource.config(image= self.iconCheck)
-            holder = 'IP Webcam (etc... 192.168.1.1)'
+            holder = 'IP WEBCAM EXAMPLE: 192.168.1.1'
             self.checkDir.config(bg= 'white')
         else:
             self.btnSource.config(image= self.iconMp4)
-            holder = 'Enter Url Video...(etc:..C:/video)'
-            self.checkDir.config(bg= 'green')
+            holder = 'EXAMPLE: C:/VIDEO/DETECTION.MP4'
+            self.checkDir.config(bg= '#c1ffe5')
 
         self.fun_reloadHolderSource(source=holder)
 
@@ -153,7 +154,7 @@ class ChoseSourceWindow:
             url = self.fun_getURL_IPCam(ip=self.tbSource.get())
         else:
             self.RETURN_RESULT = filedialog.askopenfilename(initialdir="/", title="Select file",
-                                                            filetypes=(("AVI files", "*.avi"), ("MP4 files", "*.mp4"), ("ALL files", "*.*")))
+                                                            filetypes=(("AVI files", "*.AVI"), ("MP4 files", "*.MP4"), ("ALL files", "*.*")))
             self.fun_reloadHolderSource(source=self.RETURN_RESULT)
             url = self.RETURN_RESULT
 
@@ -181,10 +182,19 @@ class MyApp:
         self.containerTrai = None
         self.containerPhai = None
 
-        self.initComponent()
         self.root.minsize(width=WINDOWS_WIDTH, height=WINDOWS_HEIGHT)
         # libs.fun_makeCenter(self.root)
         libs.fun_makeMaximumSize(self.root)
+
+        # Load model VGG16
+        self.vgg16_model = cf.fun_getVGG16Model()
+        self.vgg16_model.summary()
+
+        # Load model LSTM
+        self.lstm_model = cf.fun_loadModelLSTM()
+        self.lstm_model.summary()
+
+        self.initComponent()
 
     def initComponent(self):
         #
@@ -273,6 +283,17 @@ class MyApp:
         self.containerPhanDoanBaoLuc.grid(row=0, column=0, sticky='nsew')
         self.containerTongHopMoTaPhanDoanDanh.grid(row=1, column=0, sticky='nsew')
 
+        # Label hien thi loai bao luc gi
+        self.lbKetQuaBaoLuc = Label(self.containerTongHopMoTaPhanDoanDanh,
+                                    text='Khong Co Bao Luc', padx=10,
+                                    pady=10,
+                                    bg='white',
+                                    font=('Helvetica', 18, 'bold')
+                                    )
+        self.lbKetQuaBaoLuc.grid(row=0, column=0, sticky='nsew')
+        self.containerTongHopMoTaPhanDoanDanh.grid_rowconfigure(0, weight=1)
+        self.containerTongHopMoTaPhanDoanDanh.grid_columnconfigure(0, weight=1)
+
         self.containerPhai.grid_rowconfigure(0, weight=9)
         self.containerPhai.grid_rowconfigure(1, weight=1)
         self.containerPhai.grid_columnconfigure(0, weight=1)
@@ -296,8 +317,8 @@ class MyApp:
         img1 = cv2.imread(filename= 'FileInput/Imgs/ImgNotFound.jpg')
         size = libs.fun_getSizeOfFrame(frame= img)
         size1 = libs.fun_getSizeOfFrame(frame= img1)
-        self.imgNotFound = self.fun_cv2_imageArrayToImage(containerFather= self.containerVideoCamera, frame= img, reSize= size)
-        self.imgNotFound1 = self.fun_cv2_imageArrayToImage(containerFather= self.containerVideoCamera, frame= img1, reSize= (int(size[0] * 0.2), int(size[1] * 0.2)))
+        self.imgNotFound = libs.fun_cv2_imageArrayToImage(containerFather= self.containerVideoCamera, frame= img, reSize= size)
+        self.imgNotFound1 = libs.fun_cv2_imageArrayToImage(containerFather= self.containerVideoCamera, frame= img1, reSize= (int(size[0] * 0.2), int(size[1] * 0.2)))
         self.lbVideoFrames.config(image= self.imgNotFound)
         self.lbVideoFrames1.config(image= self.imgNotFound1)
         self.lbVideoFrames2.config(image= self.imgNotFound1)
@@ -330,17 +351,6 @@ class MyApp:
         self.containerChucNang.grid_rowconfigure(0, weight=1)
         for i in range(0, len(actionNames)):
             self.containerChucNang.grid_columnconfigure(i, weight=1)
-
-        # Label hien thi loai bao luc gi
-        self.lbKetQuaBaoLuc = Label(self.containerTongHopMoTaPhanDoanDanh,
-                                    text='Khong Co Bao Luc', padx=10,
-                                    pady=10,
-                                    bg='white',
-                                    font=('Helvetica', 18, 'bold')
-                                    )
-        self.lbKetQuaBaoLuc.grid(row=0, column=0, sticky='nsew')
-        self.containerTongHopMoTaPhanDoanDanh.grid_rowconfigure(0, weight=1)
-        self.containerTongHopMoTaPhanDoanDanh.grid_columnconfigure(0, weight=1)
 
     # event cho button chon nguon du lieu
     def fun_chonNguonDuLieu(self):
@@ -398,10 +408,10 @@ class MyApp:
         self.frameVideo4.grid_columnconfigure(0, weight=1)
 
         self.arrThread = []
-        thread1 = MyThreadingVideo(lbShow=self.lbVideoFrames1, lbFather=self.frameVideo1)
-        thread2 = MyThreadingVideo(lbShow=self.lbVideoFrames2, lbFather=self.frameVideo2)
-        thread3 = MyThreadingVideo(lbShow=self.lbVideoFrames3, lbFather=self.frameVideo3)
-        thread4 = MyThreadingVideo(lbShow=self.lbVideoFrames4, lbFather=self.frameVideo4)
+        thread1 = MyThreadingVideo(lbShow=self.lbVideoFrames1, lbFather=self.frameVideo1, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model)
+        thread2 = MyThreadingVideo(lbShow=self.lbVideoFrames2, lbFather=self.frameVideo2, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model)
+        thread3 = MyThreadingVideo(lbShow=self.lbVideoFrames3, lbFather=self.frameVideo3, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model)
+        thread4 = MyThreadingVideo(lbShow=self.lbVideoFrames4, lbFather=self.frameVideo4, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model)
         self.arrThread.append(thread1)
         self.arrThread.append(thread3)
         self.arrThread.append(thread4)
@@ -424,7 +434,7 @@ class MyApp:
         xoayVong = 0
         frames = []
         while not self.stopEvent.is_set() and self.isContinue:
-            image = self.fun_cv2_imageArrayToImage(containerFather= self.containerVideoCamera, frame= self.frame.copy())
+            image = libs.fun_cv2_imageArrayToImage(containerFather= self.containerVideoCamera, frame= self.frame.copy())
 
             self.lbVideoFrames.config(image=image)
             self.lbVideoFrames.image = image
@@ -455,18 +465,6 @@ class MyApp:
         self.videoCap.release()
         self.root.destroy()
         sys.exit(0)
-
-    def fun_cv2_imageArrayToImage(self, containerFather, frame, reSize=None):
-        if reSize is None:
-            winWidth = int(containerFather.winfo_width() * 0.9)
-            winHeight = int(containerFather.winfo_height() * 0.9)
-            frame = cv2.resize(frame, dsize=(winWidth, winHeight))
-        else:
-            frame = cv2.resize(frame, dsize= reSize)
-        image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        image = Image.fromarray(image)
-        image = ImageTk.PhotoImage(image)
-        return image
 
 if __name__ == '__main__':
     if IS_USING_WEBCAM:

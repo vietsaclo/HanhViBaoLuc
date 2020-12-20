@@ -19,7 +19,7 @@ DIR_INPUT_TEST1 = DIR_ROOT + 'Data/Test1'
 DIR_INPUT_VALIDATION = DIR_ROOT + 'Data/Validation'
 DIR_INPUT_SHOW_VIDEO_TEST = DIR_ROOT + 'Data/ShowVideoTest'
 DIR_INPUT_SHOW_VIDEO_TRAIN = DIR_ROOT + 'Data/ShowVideoTrain'
-DIR_MODEL_LSTM = DIR_ROOT + 'Modules/LSTM_Model__17_12_2020.h5'
+DIR_MODEL_LSTM = DIR_ROOT + 'Modules/LSTM_Model_20_12_2020_LanFinal.h5'
 DIR_MODEL_CNN = DIR_ROOT + 'Modules/VGG16_Model.h5'
 DIR_TRANSFER_VALUES_VGG16_MODEL = DIR_ROOT + 'Modules/TransferValuesVGG16.npy'
 SIZE = (224, 224)
@@ -52,7 +52,7 @@ VIDEO_NAMES = [
     'nt',
     'om',
     'tc',
-    'vd',
+    'vk',
     'xd',
     'xt'
 ]
@@ -71,7 +71,7 @@ VIDEO_NAMES_DETAIL = [
     'nt',
     'om',
     'tc',
-    'vd',
+    'vk',
     'xd',
     'xt'
 ]
@@ -321,18 +321,18 @@ def fun_getModelLSTM_5(rnn_size: int = RNN_SIZE, input_shape: tuple = (NUM_FRAME
 
   return modelLSTM
 
-  # Dinh nghia mang LSTM 6
+# Dinh nghia mang LSTM 6
 def fun_getModelLSTM_6(rnn_size: int = RNN_SIZE, input_shape: tuple = (NUM_FRAME_INPUT_LSTM, TRANSFER_VALUE_SIZE), num_classify: int = NUM_CLASSIFY):
   modelLSTM = Sequential()
-  modelLSTM.add(LSTM(200, input_shape= input_shape))
+  modelLSTM.add(LSTM(120, input_shape= input_shape))
   modelLSTM.add(Dense(1024, activation='relu'))
   modelLSTM.add(Dropout(.5))
   modelLSTM.add(Dense(512, activation='relu'))
   modelLSTM.add(Dropout(.5))
   modelLSTM.add(Dense(128, activation='relu'))
   modelLSTM.add(Dropout(.5))
-  modelLSTM.add(Dense(64, activation='sigmoid'))
-  modelLSTM.add(Dense(num_classify, activation='softmax'))
+  modelLSTM.add(Dense(64, activation='relu'))
+  modelLSTM.add(Dense(NUM_CLASSIFY, activation='softmax'))
 
   opt = keras.optimizers.Adam(learning_rate= LEARNING_RATE)
   modelLSTM.compile(loss='mean_squared_error', optimizer=opt, metrics=['accuracy'])
@@ -468,7 +468,7 @@ def fun_showAnalysis(history):
     plt.show()
 
 def fun_loadModelLSTM():
-    modelLSTM = fun_getModelLSTM(num_classify= NUM_CLASSIFY)
+    modelLSTM = fun_getModelLSTM_6(num_classify= NUM_CLASSIFY)
     modelLSTM.load_weights(filepath= DIR_MODEL_LSTM)
     return modelLSTM
 
@@ -476,3 +476,8 @@ def fun_evaluate(modelLSTM, testSet, testLabelSet):
     result = modelLSTM.evaluate(np.array(testSet), np.array(testLabelSet))
     for name, value in zip(modelLSTM.metrics_names, result):
         print(name, value)
+
+def fun_FilterVideoFitFrameCount(fileName:str ,count: int=25):
+    frames = lib.fun_getFramesOfVideo_ALL(path= fileName)
+    if len(frames) < count:
+      print(fileName)
