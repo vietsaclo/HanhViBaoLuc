@@ -6,6 +6,7 @@ import cv2
 import threading
 from PIL import Image
 from PIL import ImageTk
+from Modules.MyComponents import TreeActionDetection
 
 from Modules.MyThreading import MyThreadingVideo
 
@@ -175,7 +176,6 @@ class MyApp:
         self.title = title
         self.root = Tk()
         self.root.title(string=title)
-        self.arrACTION = []
         self.stopEvent = None
         self.IS_PAUSE = False
 
@@ -284,15 +284,15 @@ class MyApp:
         self.containerTongHopMoTaPhanDoanDanh.grid(row=1, column=0, sticky='nsew')
 
         # Label hien thi loai bao luc gi
-        self.lbKetQuaBaoLuc = Label(self.containerTongHopMoTaPhanDoanDanh,
-                                    text='Khong Co Bao Luc', padx=10,
+        self.lbKetQuaBaoLuc = Label(self.containerChucNang,
+                                    text='TÊN BẠO LỰC HIỂN THỊ TẠI ĐÂY', padx=10,
                                     pady=10,
                                     bg='white',
                                     font=('Helvetica', 18, 'bold')
                                     )
         self.lbKetQuaBaoLuc.grid(row=0, column=0, sticky='nsew')
-        self.containerTongHopMoTaPhanDoanDanh.grid_rowconfigure(0, weight=1)
-        self.containerTongHopMoTaPhanDoanDanh.grid_columnconfigure(0, weight=1)
+        self.containerChucNang.grid_rowconfigure(0, weight=1)
+        self.containerChucNang.grid_columnconfigure(0, weight=1)
 
         self.containerPhai.grid_rowconfigure(0, weight=9)
         self.containerPhai.grid_rowconfigure(1, weight=1)
@@ -316,7 +316,6 @@ class MyApp:
         img = cv2.imread(filename= 'FileInput/Imgs/ImgNotFound2.jpg')
         img1 = cv2.imread(filename= 'FileInput/Imgs/ImgNotFound.jpg')
         size = libs.fun_getSizeOfFrame(frame= img)
-        size1 = libs.fun_getSizeOfFrame(frame= img1)
         self.imgNotFound = libs.fun_cv2_imageArrayToImage(containerFather= self.containerVideoCamera, frame= img, reSize= size)
         self.imgNotFound1 = libs.fun_cv2_imageArrayToImage(containerFather= self.containerVideoCamera, frame= img1, reSize= (int(size[0] * 0.2), int(size[1] * 0.2)))
         self.lbVideoFrames.config(image= self.imgNotFound)
@@ -337,20 +336,8 @@ class MyApp:
 
     def fun_taiGiaoDien17CapDo(self):
         # Giao dien cho container 17 Cap do
-        self.arrACTION.clear()
-        actionNames = cf.VIDEO_NAMES.copy()
-        actionNames.insert(0, 'no')
-        for i in range(0, len(actionNames)):
-            action = Label(self.containerChucNang, bg='#ffffff', padx=10, pady=10,
-                           text=actionNames[i],
-                           font=('Helvetica', 18, 'bold')
-                           )
-            action.grid(row=0, column=i, sticky='nsew')
-            self.arrACTION.append(action)
-
-        self.containerChucNang.grid_rowconfigure(0, weight=1)
-        for i in range(0, len(actionNames)):
-            self.containerChucNang.grid_columnconfigure(i, weight=1)
+        pass # Nothing to do
+        self.treeAction = TreeActionDetection(containerFather= self.containerPhanDoanBaoLuc)
 
     # event cho button chon nguon du lieu
     def fun_chonNguonDuLieu(self):
@@ -373,15 +360,20 @@ class MyApp:
         self.frameVideo3 = Frame(self.containerPhanDoanBaoLuc, padx=10, pady=10, bg='#c1ffe5')
         self.frameVideo4 = Frame(self.containerPhanDoanBaoLuc, padx=10, pady=10, bg='white')
 
-        self.frameVideo1.grid(row=0, column=0, sticky='nsew')
-        self.frameVideo2.grid(row=0, column=1, sticky='nsew')
-        self.frameVideo3.grid(row=1, column=0, sticky='nsew')
-        self.frameVideo4.grid(row=1, column=1, sticky='nsew')
+        '''
+            Lam chi de cho LeanGUI thoi LeanGUI_V2 Khong co su dung ne tat di
+            So di lam nhu vay boi bi khong phai dung cham gi den cac class khac
+            ma van hoat dong duoc tren ca 2 GUI va GUI V2
+        '''
+        # self.frameVideo1.grid(row=0, column=0, sticky='nsew')
+        # self.frameVideo2.grid(row=0, column=1, sticky='nsew')
+        # self.frameVideo3.grid(row=1, column=0, sticky='nsew')
+        # self.frameVideo4.grid(row=1, column=1, sticky='nsew')
 
         self.containerPhanDoanBaoLuc.grid_rowconfigure(0, weight=1)
-        self.containerPhanDoanBaoLuc.grid_rowconfigure(1, weight=1)
+        # self.containerPhanDoanBaoLuc.grid_rowconfigure(1, weight=1)
         self.containerPhanDoanBaoLuc.grid_columnconfigure(0, weight=1)
-        self.containerPhanDoanBaoLuc.grid_columnconfigure(1, weight=1)
+        # self.containerPhanDoanBaoLuc.grid_columnconfigure(1, weight=1)
 
         # phan doan 1
         self.lbVideoFrames1 = Label(self.frameVideo1, padx=10, pady=10, bg='white')
@@ -408,10 +400,10 @@ class MyApp:
         self.frameVideo4.grid_columnconfigure(0, weight=1)
 
         self.arrThread = []
-        thread1 = MyThreadingVideo(lbShow=self.lbVideoFrames1, lbFather=self.frameVideo1, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model)
-        thread2 = MyThreadingVideo(lbShow=self.lbVideoFrames2, lbFather=self.frameVideo2, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model)
-        thread3 = MyThreadingVideo(lbShow=self.lbVideoFrames3, lbFather=self.frameVideo3, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model)
-        thread4 = MyThreadingVideo(lbShow=self.lbVideoFrames4, lbFather=self.frameVideo4, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model)
+        thread1 = MyThreadingVideo(lbShow=None, lbFather=self.frameVideo1, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model)
+        thread2 = MyThreadingVideo(lbShow=None, lbFather=self.frameVideo2, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model)
+        thread3 = MyThreadingVideo(lbShow=None, lbFather=self.frameVideo3, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model)
+        thread4 = MyThreadingVideo(lbShow=None, lbFather=self.frameVideo4, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model)
         self.arrThread.append(thread1)
         self.arrThread.append(thread3)
         self.arrThread.append(thread4)
