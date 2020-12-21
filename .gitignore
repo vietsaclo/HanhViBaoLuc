@@ -142,7 +142,7 @@ Models/
 Train_30_10_2020_2/
 .idea/
 Data/
-Modules/LSTM_Model.h5
+Modules/LSTM_Model_79Per_17_12_2020.h5
 Modules/VGG16_Model.h5
 destination_path.eps
 destination_path1.eps
@@ -150,3 +150,4 @@ videos/
 *.h5
 *.eps
 *.npy
+Datatest/
