@@ -30,16 +30,18 @@ class MyThreadingVideo:
 
     def VideoThread(self):
         # Predict cho moi 20Frames Anh tai day
-        transfer = cf.fun_getTransferValue_EDIT(pathVideoOrListFrame= self.frames, modelVGG16= self.vgg16_model)
-        pre, real = libs.fun_predict(modelLSTM= self.lstm_model, transferValue=transfer)
-        conv = cf.VIDEO_NAMES_DETAIL[pre] if real > 0.7 else 'NO'
-        text = 'Predict: {0} -> Real: [ {1} ]'.format(conv, real)
+        # transfer = cf.fun_getTransferValue_EDIT(pathVideoOrListFrame= self.frames, modelVGG16= self.vgg16_model)
+        # pre, real = libs.fun_predict(modelLSTM= self.lstm_model, transferValue=transfer)
+        # conv = cf.VIDEO_NAMES_DETAIL[pre] if real > 0.7 else 'NO'
+        # text = 'Predict: {0} -> Real: [ {1} ]'.format(conv, real)
 
-        # Show thread video
-        for frame in self.frames:
-            image = libs.fun_cv2_imageArrayToImage(containerFather= self.lbFather, frame= frame.copy(), reSize= 0.8)
-            self.lbShow.config(image= image)
-            self.lbShow.image = image
-            
+        if self.lbShow is not None:
+            # Show thread video
+            for frame in self.frames:
+                image = libs.fun_cv2_imageArrayToImage(containerFather= self.lbFather, frame= frame.copy(), reSize= 0.8)
+                self.lbShow.config(image= image)
+                self.lbShow.image = image
+                
         
-        self.lbShowKetQua.config(text= 'kq: '+str(self.myThread.name) + '-> ' + text)
+        # self.lbShowKetQua.config(text= 'kq: '+str(self.myThread.name) + '-> ' + 'text')
+        libs.fun_saveFramesToVideo(frames= self.frames, path= 'C:/Users/nguye/OneDrive/Máy tính/aa/video_'+self.myThread.name+'.avi')
