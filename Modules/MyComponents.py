@@ -19,14 +19,6 @@ class TreeActionDetection:
         tree.heading("#0",text="Name",anchor=tk.W)
         tree.heading("one", text="Date modified",anchor=tk.W)
 
-        # # Level 1
-        # folder1=tree.insert("", 1, "", text="Folder 1")
-        # tree.insert("", 2, "", text="text_file.txt", values=("23-Jun-17 11:25"))
-        # # Level 2
-        # tree.insert(folder1, "end", "", text="photo1.png", values=("23-Jun-17 11:28"))
-        # tree.insert(folder1, "end", "", text="photo2.png", values=("23-Jun-17 11:29"))
-        # tree.insert(folder1, "end", "", text="photo3.png", values=("23-Jun-17 11:30"))
-
         tree.grid(row=0, column= 0, sticky= 'nsew')
         self.tree = tree
         vsb = ttk.Scrollbar(self.containerFather, orient="vertical", command=tree.yview)

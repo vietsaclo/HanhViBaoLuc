@@ -187,12 +187,12 @@ class MyApp:
         libs.fun_makeMaximumSize(self.root)
 
         # Load model VGG16
-        self.vgg16_model = None
-        # self.vgg16_model.summary()
+        self.vgg16_model = cf.fun_getVGG16Model()
+        self.vgg16_model.summary()
 
         # Load model LSTM
-        self.lstm_model = None
-        # self.lstm_model.summary()
+        self.lstm_model = cf.fun_loadModelLSTM()
+        self.lstm_model.summary()
 
         self.initComponent()
 
