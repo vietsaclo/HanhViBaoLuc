@@ -204,8 +204,8 @@ class MyApp:
         self.containerTrai.grid(row=0, column=0, sticky='nsew')
         self.containerPhai.grid(row=0, column=1, sticky='nsew')
 
-        self.root.grid_columnconfigure(0, weight=1)
-        self.root.grid_columnconfigure(1, weight=1)
+        self.root.grid_columnconfigure(0, weight=8)
+        self.root.grid_columnconfigure(1, weight=2)
         self.root.grid_rowconfigure(0, weight=1)
 
         # Container con cua trai
@@ -337,7 +337,6 @@ class MyApp:
     def fun_taiGiaoDien17CapDo(self):
         # Giao dien cho container 17 Cap do
         pass # Nothing to do
-        self.treeAction = TreeActionDetection(containerFather= self.containerPhanDoanBaoLuc)
 
     # event cho button chon nguon du lieu
     def fun_chonNguonDuLieu(self):
@@ -355,6 +354,8 @@ class MyApp:
         self.videoLoadingThreading()
 
     def makePhanDoanBaoLucGUI6(self):
+        self.treeAction = TreeActionDetection(containerFather= self.containerPhanDoanBaoLuc)
+
         self.frameVideo1 = Frame(self.containerPhanDoanBaoLuc, padx=10, pady=10, bg='white')
         self.frameVideo2 = Frame(self.containerPhanDoanBaoLuc, padx=10, pady=10, bg='#c1ffe5')
         self.frameVideo3 = Frame(self.containerPhanDoanBaoLuc, padx=10, pady=10, bg='#c1ffe5')
@@ -400,10 +401,10 @@ class MyApp:
         self.frameVideo4.grid_columnconfigure(0, weight=1)
 
         self.arrThread = []
-        thread1 = MyThreadingVideo(lbShow=None, lbFather=self.frameVideo1, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model)
-        thread2 = MyThreadingVideo(lbShow=None, lbFather=self.frameVideo2, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model)
-        thread3 = MyThreadingVideo(lbShow=None, lbFather=self.frameVideo3, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model)
-        thread4 = MyThreadingVideo(lbShow=None, lbFather=self.frameVideo4, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model)
+        thread1 = MyThreadingVideo(lbShow=None, lbFather=self.frameVideo1, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model, treeAction= self.treeAction)
+        thread2 = MyThreadingVideo(lbShow=None, lbFather=self.frameVideo2, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model, treeAction= self.treeAction)
+        thread3 = MyThreadingVideo(lbShow=None, lbFather=self.frameVideo3, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model, treeAction= self.treeAction)
+        thread4 = MyThreadingVideo(lbShow=None, lbFather=self.frameVideo4, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model, treeAction= self.treeAction)
         self.arrThread.append(thread1)
         self.arrThread.append(thread3)
         self.arrThread.append(thread4)

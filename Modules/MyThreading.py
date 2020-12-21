@@ -5,11 +5,13 @@ from PIL import Image
 from PIL import ImageTk
 from Modules import PublicModules as libs
 from Modules import LSTM_Config as cf
+import random
 
 class MyThreadingVideo:
-    def __init__(self, lbShow, lbFather, lbShowKetQua, vgg16_model, lstm_model):
+    def __init__(self, lbShow, lbFather, lbShowKetQua, vgg16_model, lstm_model, treeAction):
         self.vgg16_model = vgg16_model
         self.lstm_model = lstm_model
+        self.treeAction = treeAction
         self.frames = None
         self.lbShow = lbShow
         self.lbShowKetQua = lbShowKetQua
@@ -42,6 +44,5 @@ class MyThreadingVideo:
                 self.lbShow.config(image= image)
                 self.lbShow.image = image
                 
-        
-        # self.lbShowKetQua.config(text= 'kq: '+str(self.myThread.name) + '-> ' + 'text')
-        libs.fun_saveFramesToVideo(frames= self.frames, path= 'C:/Users/nguye/OneDrive/Máy tính/aa/video_'+self.myThread.name+'.avi')
+        pre = random.randint(0, len(cf.VIDEO_NAMES) - 1)
+        self.treeAction.fun_saveVideoDetection(frames= self.frames, fol= cf.VIDEO_NAMES[pre])

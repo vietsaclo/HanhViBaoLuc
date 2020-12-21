@@ -2,6 +2,8 @@ from tkinter import ttk
 import tkinter as tk
 from Modules import LSTM_Config as cf
 from Modules import PublicModules as libs
+import datetime
+import os
 
 PATH_SAVE_DETECTION = 'FileOutput/Detection'
 
@@ -42,7 +44,6 @@ class TreeActionDetection:
 
         # Expand toan bo treee view
         self.open_children(self.tree.focus())
-        self.fun_testSave()
 
     def fun_load16Folder(self):
         self.arr16Folder = []
@@ -56,15 +57,41 @@ class TreeActionDetection:
 
     def fun_saveVideoDetection(self, frames:list, fol:str, bonusFormThread:str = ''):
         folName = self.fun_getID_FolderTree(fol= fol)
-        self.tree.insert(folName, "end", "", text="{0}_photo1.png".format(bonusFormThread), values=("23-Jun-17 11:28"))
+        conv, time = self.fun_getCurrentTime()
+        fileSave = fol + '_' + conv + '_' + bonusFormThread if bonusFormThread != '' else fol + '_' +  conv
+
+        # AVI extention default
+        fileSave += '.avi'
+
+        # make folder if not exists
+        self.fun_makeFolder(fol= fol)
+
+        # Save clip to disk
+        pathSave = self.PATH_SAVE_DETECTION + '/' + fol
+        isSave = libs.fun_saveFramesToVideo(frames= frames, path= pathSave + '/' + fileSave)
+        if not isSave:
+            libs.fun_print(name= 'Save video: '+ pathSave + '/' + fileSave, value= 'Error: UNKNOW ERROR')
+
+        # Show into GUI
+        self.tree.insert(folName, "end", "", text= fileSave, values=(time))
 
     def open_children(self, parent):
         self.tree.item(parent, open=True)
         for child in self.tree.get_children(parent):
             self.open_children(child)
+    
+    def fun_getCurrentTime(self, ):
+        time = datetime.datetime.now().isoformat()
+        res = ''
+        for c in time:
+            if c == '-' or c == ':' or c == '.':
+                res += '_'
+            else:
+                res += c
+        
+        return res, time
 
-    def fun_testSave(self,):
-        for i in range(0, len(cf.VIDEO_NAMES)):
-            for j in range(0, 3):
-                fol = cf.VIDEO_NAMES[i]
-                self.fun_saveVideoDetection(frames= None, fol= fol, bonusFormThread= j)
+    def fun_makeFolder(self, fol):
+        path = self.PATH_SAVE_DETECTION + '/' + fol
+        if not os.path.exists(path= path):
+            os.makedirs(name= path)
