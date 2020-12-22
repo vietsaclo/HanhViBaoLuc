@@ -5,6 +5,7 @@ import zipfile
 from PIL import Image
 from PIL import ImageTk
 import numpy as np
+from datetime import datetime, timedelta
 
 def fun_print(name: str, value) -> None:
     print('@ Deep Learning> ', name)
@@ -224,3 +225,32 @@ def fun_predict(modelLSTM, transferValue, isPrint: bool= False):
       print(Real, pre)
       print('\r')
     return pre, Real[0][pre]
+
+def fun_getCurrentTime():
+    time = datetime.now().isoformat()
+    res = ''
+    for c in time:
+        if c == '-' or c == ':' or c == '.':
+            res += '_'
+        else:
+            res += c
+    
+    tmps = res.split('T')
+    left = tmps[0].split('_')
+    right = tmps[1].split('_')
+
+    # Y_M_D_h_m_s
+    time = '{0}_{1}_{2}_{3}_{4}_{5}'.format(left[0], left[1], left[2], right[0], right[1], right[2])
+
+    return res, time
+
+def fun_dayMinus(dayFrom:str, dayTo:str):
+    Y, M, D, h, m, s = 0, 1, 2, 3, 4, 5
+    dayF = dayFrom.split('_')
+    dayT = dayTo.split('_')
+
+    dT = datetime(int(dayT[Y]), int(dayT[M]), int(dayT[D]), int(dayT[h]), int(dayT[m]), int(dayT[s]))
+    dF = datetime(int(dayF[Y]), int(dayF[M]), int(dayF[D]), int(dayF[h]), int(dayF[m]), int(dayF[s]))
+    
+    res = str(dT - dF);
+    return res[0] != '-', res
