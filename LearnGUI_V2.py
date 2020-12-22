@@ -7,8 +7,10 @@ import threading
 from PIL import Image
 from PIL import ImageTk
 from Modules.MyComponents import TreeActionDetection
-
+from tkcalendar import Calendar
 from Modules.MyThreading import MyThreadingVideo
+from threading import Thread
+from time import sleep
 
 WINDOWS_WIDTH = int(1280 * 0.6)
 WINDOWS_HEIGHT = int(720 * 0.6)
@@ -48,7 +50,6 @@ class EntryWithPlaceholder(Entry):
 class ChoseSourceWindow:
     def __init__(self, master):
         self.isUsingIpWebcam = IntVar()
-        self.valSource = StringVar()
         self.master = master
         self.master.minsize(500, 100)
         self.frame = Frame(self.master)
@@ -178,6 +179,9 @@ class MyApp:
         self.root.title(string=title)
         self.stopEvent = None
         self.IS_PAUSE = False
+        self.isChoiseTimeDown = IntVar()
+        self.valHourDown = StringVar()
+        self.valMinuteDown = StringVar()
 
         self.containerTrai = None
         self.containerPhai = None
@@ -195,6 +199,106 @@ class MyApp:
         self.lstm_model.summary()
 
         self.initComponent()
+
+    def fun_updateTimeDown(self,):
+        while self.isChoiseTimeDown.get():
+            _, current = libs.fun_getCurrentTime()
+            _, self.down = libs.fun_dayMinus(dayFrom= current, dayTo= self.dayTo)
+            try:
+                self.lbThoiGianConLai.config(text= 'Con Lai: {0} s'.format(self.down))
+            except:
+                print('Thread update time down stoped but not working correct!'+ Thread.name)
+            sleep(1)
+
+    def fun_hienThoiGianDen_Con(self, timeDown: str, hourDown:int, minuteDown:int):
+        self.lbThoiGianConLai = Label(self.containerTongHopMoTaPhanDoanDanh,
+        text= 'CÒN LẠI: {0} s'.format(self.down),
+        padx= 10, pady= 10,
+        font=('Helvetica', 18, 'bold'),
+        anchor= 'w'
+        )
+
+        self.lbThoiGianDen = Label(self.containerTongHopMoTaPhanDoanDanh,
+        text= 'TẮT VÀO: {0} {1}h : {2}m'.format(timeDown, hourDown, minuteDown),
+        padx= 10, pady= 10,
+        font=('Helvetica', 18, 'bold'),
+        anchor= 'w'
+        )
+
+        self.lbThoiGianDen.grid(row= 1, column= 0, sticky= 'nsew')
+        self.lbThoiGianConLai.grid(row= 2, column= 0, sticky= 'nsew')
+
+        self.containerTongHopMoTaPhanDoanDanh.grid_rowconfigure(1, weight= 1)
+        self.containerTongHopMoTaPhanDoanDanh.grid_rowconfigure(2, weight= 1)
+
+    def fun_chonThoiGianDen(self, ):
+        isChoise = self.isChoiseTimeDown.get()
+        self.TIME_DOWN = None
+        # 1 => get | 0 - not
+
+        if not isChoise:
+            self.lbThoiGianDen.destroy()
+            self.lbThoiGianConLai.destroy()
+            self.cbThoiGianTat.config(bg= 'white')
+            return
+        
+        self.cbThoiGianTat.config(bg= '#95deff')
+        # hien thi form chon thoi gian
+        top = Toplevel(self.root)
+        cal = Calendar(top,
+                    font="Arial 14", selectmode='day',
+                    cursor="hand1", year=2018, month=2, day=5)
+        cal.pack(fill="both", expand=True)
+        self.tbHour = EntryWithPlaceholder(top, placeholder= 'TIME SELECTED')
+        self.tbHour.pack(fill= 'both', expand= True, padx= 10, pady= 10)
+        self.tbMinute = EntryWithPlaceholder(top, placeholder= 'MINUTE SELECTED')
+        self.tbMinute.pack(fill= 'both', expand= True, padx= 10, pady= 10)
+        Button(top, text="APPLY NOW", command= self.fun_btnOkChoiDataTimeDownClicked).pack(fill= 'both', expand= True, padx= 10, pady= 10)
+        self.cal = cal
+        self.ChoiseTimeDownWindow = top
+        top.grab_set()
+        self.root.wait_window(top)
+
+        if self.TIME_DOWN is None:
+            messagebox.showwarning('Thong bao!', 'Chon time that bai')
+            self.isChoiseTimeDown.set(0)
+            self.cbThoiGianTat.config(bg= 'white')
+            return
+
+        # khiem tra thoi gian hop le tai day
+        _, curent = libs.fun_getCurrentTime()
+        ymd = str(self.TIME_DOWN).split('-')
+        dayTo = '{0}_{1}_{2}_{3}_{4}_{5}'.format(ymd[0], ymd[1], ymd[2], self.hourDown, self.minuteDown, 0)
+        isCheck, down = libs.fun_dayMinus(dayFrom= curent, dayTo= dayTo)
+
+        if not isCheck:
+            messagebox.showerror('Thong bao!', 'Chon time that bai')
+            self.isChoiseTimeDown.set(0)
+            self.cbThoiGianTat.config(bg= 'white')
+            return
+
+        self.dayTo = dayTo
+        self.down = down
+
+        self.fun_hienThoiGianDen_Con(timeDown= self.TIME_DOWN, hourDown= self.hourDown, minuteDown= self.minuteDown)
+        # start new thread update downtime
+        self.threadUpdateTime = Thread(target= self.fun_updateTimeDown)
+        self.threadUpdateTime.setDaemon(True)
+        self.threadUpdateTime.start()
+
+    def fun_btnOkChoiDataTimeDownClicked(self, ):
+        self.TIME_DOWN = self.cal.selection_get()
+        hour = 0
+        minu = 0
+        try:
+            hour = int(self.tbHour.get())
+            minu = int(self.tbMinute.get())
+        except:
+            messagebox.showwarning('Error!', 'Error white pare hour and minute-> but default [ {0} : {1} ]'.format(hour, minu))
+
+        self.hourDown = hour
+        self.minuteDown = minu
+        self.ChoiseTimeDownWindow.destroy()
 
     def initComponent(self):
         #
@@ -282,6 +386,18 @@ class MyApp:
 
         self.containerPhanDoanBaoLuc.grid(row=0, column=0, sticky='nsew')
         self.containerTongHopMoTaPhanDoanDanh.grid(row=1, column=0, sticky='nsew')
+
+        # Container con cua container containerTongHopMoTaPhanDoanDanh
+        self.cbThoiGianTat = Checkbutton(self.containerTongHopMoTaPhanDoanDanh,
+        text= 'CHỌN THỜI GIAN TỰ ĐỘNG TẮT', padx= 10, pady= 10,
+        font=('Helvetica', 18, 'bold'),
+        variable= self.isChoiseTimeDown,
+        command= self.fun_chonThoiGianDen,
+        )
+        self.cbThoiGianTat.grid(row= 0, column= 0, sticky= 'nsew')
+
+        self.containerTongHopMoTaPhanDoanDanh.grid_rowconfigure(0, weight= 1)
+        self.containerTongHopMoTaPhanDoanDanh.grid_columnconfigure(0, weight= 1)
 
         # Label hien thi loai bao luc gi
         self.lbKetQuaBaoLuc = Label(self.containerChucNang,

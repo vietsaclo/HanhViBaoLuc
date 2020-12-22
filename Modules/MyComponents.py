@@ -2,7 +2,6 @@ from tkinter import ttk
 import tkinter as tk
 from Modules import LSTM_Config as cf
 from Modules import PublicModules as libs
-import datetime
 import os
 
 PATH_SAVE_DETECTION = 'FileOutput/Detection'
@@ -49,7 +48,7 @@ class TreeActionDetection:
 
     def fun_saveVideoDetection(self, frames:list, fol:str, bonusFormThread:str = ''):
         folName = self.fun_getID_FolderTree(fol= fol)
-        conv, time = self.fun_getCurrentTime()
+        conv, time = libs.fun_getCurrentTime()
         fileSave = fol + '_' + conv + '_' + bonusFormThread if bonusFormThread != '' else fol + '_' +  conv
 
         # AVI extention default
@@ -71,17 +70,6 @@ class TreeActionDetection:
         self.tree.item(parent, open=True)
         for child in self.tree.get_children(parent):
             self.open_children(child)
-    
-    def fun_getCurrentTime(self, ):
-        time = datetime.datetime.now().isoformat()
-        res = ''
-        for c in time:
-            if c == '-' or c == ':' or c == '.':
-                res += '_'
-            else:
-                res += c
-        
-        return res, time
 
     def fun_makeFolder(self, fol):
         path = self.PATH_SAVE_DETECTION + '/' + fol
