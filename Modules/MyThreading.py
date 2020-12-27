@@ -36,8 +36,6 @@ class MyThreadingVideo:
 
         transfer = cf.fun_getTransferValue_EDIT(pathVideoOrListFrame= self.frames, modelVGG16= self.vgg16_model)
         pre, real = libs.fun_predict(modelLSTM= self.lstm_model, transferValue=transfer, isPrint= True)
-        print('- '*20)
-        print(real)
         if real == -1:
             conv = 'UNKNOW'
         else:
@@ -53,8 +51,9 @@ class MyThreadingVideo:
 
         self.lbFather.config(bg= 'red')
         self.lbShowKetQua.config(text= text)
+        # self.treeAction.fun_saveVideoDetection(frames= self.frames, fol= cf.VIDEO_NAMES[pre])
         
         # if conv != 'NO' and conv != 'UNKNOW':
         #     self.lbFather.config(bg= 'red')
         #     self.lbShowKetQua.config(text= text)
-            # self.treeAction.fun_saveVideoDetection(frames= self.frames, fol= cf.VIDEO_NAMES[pre])
+        # self.treeAction.fun_saveVideoDetection(frames= self.frames, fol= cf.VIDEO_NAMES[pre])
