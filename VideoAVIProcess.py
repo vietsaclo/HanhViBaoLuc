@@ -324,5 +324,3 @@ if __name__ == '__main__':
     # fun_renameVideoOut(pathLoad= DIR_INPUT)
 
     # fun_TMP_Rename(dirInput= 'F:/TongHopDataKhoaLuan/1_ThuCong/Lan6/NgoHuyThangLan6-001/video_out')
-
-    fun_saveVideoToImages(dirVideo= 'C:/Users/Ghost/Desktop/cutFull/bc', pathSave= 'C:/Users/Ghost/Desktop/tmp')
