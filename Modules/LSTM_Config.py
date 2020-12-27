@@ -471,7 +471,7 @@ def fun_showAnalysis(history):
     plt.show()
 
 def fun_loadModelLSTM():
-    modelLSTM = fun_getModelLSTM_6(num_classify= NUM_CLASSIFY)
+    modelLSTM = fun_getModelLSTM_2(num_classify= NUM_CLASSIFY)
     modelLSTM.load_weights(filepath= DIR_MODEL_LSTM)
     return modelLSTM
 
