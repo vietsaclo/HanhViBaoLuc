@@ -32,10 +32,17 @@ class MyThreadingVideo:
 
     def VideoThread(self):
         # Predict cho moi 20Frames Anh tai day
+        self.lbFather.config(bg='#c1ffe5')
+
         transfer = cf.fun_getTransferValue_EDIT(pathVideoOrListFrame= self.frames, modelVGG16= self.vgg16_model)
-        pre, real = libs.fun_predict(modelLSTM= self.lstm_model, transferValue=transfer)
-        conv = cf.VIDEO_NAMES_DETAIL[pre] if real > 0.7 else 'NO'
-        text = 'Predict: {0} -> Real: [ {1} ]'.format(conv, real) if conv != 'NO' else ''
+        pre, real = libs.fun_predict(modelLSTM= self.lstm_model, transferValue=transfer, isPrint= True)
+        print('- '*20)
+        print(real)
+        if real == -1:
+            conv = 'UNKNOW'
+        else:
+            conv = cf.VIDEO_NAMES_DETAIL[pre] if real > 0.7 else 'NO'
+        text = 'Predict: {0} -> Real: [ {1} ]'.format(conv, real) 
 
         if self.lbShow is not None:
             # Show thread video
@@ -43,6 +50,11 @@ class MyThreadingVideo:
                 image = libs.fun_cv2_imageArrayToImage(containerFather= self.lbFather, frame= frame.copy(), reSize= 0.8)
                 self.lbShow.config(image= image)
                 self.lbShow.image = image
-                
+
+        self.lbFather.config(bg= 'red')
         self.lbShowKetQua.config(text= text)
-        self.treeAction.fun_saveVideoDetection(frames= self.frames, fol= cf.VIDEO_NAMES[pre])
+        
+        # if conv != 'NO' and conv != 'UNKNOW':
+        #     self.lbFather.config(bg= 'red')
+        #     self.lbShowKetQua.config(text= text)
+            # self.treeAction.fun_saveVideoDetection(frames= self.frames, fol= cf.VIDEO_NAMES[pre])

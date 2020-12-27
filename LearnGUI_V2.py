@@ -11,6 +11,7 @@ from tkcalendar import Calendar
 from Modules.MyThreading import MyThreadingVideo
 from threading import Thread
 from time import sleep
+from datetime import datetime
 
 WINDOWS_WIDTH = int(1280 * 0.6)
 WINDOWS_HEIGHT = int(720 * 0.6)
@@ -203,8 +204,16 @@ class MyApp:
     def fun_updateTimeDown(self,):
         while self.isChoiseTimeDown.get():
             _, current = libs.fun_getCurrentTime()
-            _, self.down = libs.fun_dayMinus(dayFrom= current, dayTo= self.dayTo)
+            isContinue, self.down = libs.fun_dayMinus(dayFrom= current, dayTo= self.dayTo)
             try:
+                if not isContinue:
+                    self.isChoiseTimeDown.set(0)
+                    self.cbThoiGianTat.config(bg= 'white')
+                    self.lbThoiGianDen.destroy()
+                    self.lbThoiGianConLai.destroy()
+                    self.fun_ngatKetNoi()
+                    self.fun_ngatKetNoi()
+                    return
                 self.lbThoiGianConLai.config(text= 'Con Lai: {0} s'.format(self.down))
             except:
                 print('Thread update time down stoped but not working correct!'+ Thread.name)
@@ -247,7 +256,8 @@ class MyApp:
         top = Toplevel(self.root)
         cal = Calendar(top,
                     font="Arial 14", selectmode='day',
-                    cursor="hand1", year=2018, month=2, day=5)
+                    cursor="hand1",)
+        cal.selection_set(datetime.now())
         cal.pack(fill="both", expand=True)
         self.tbHour = EntryWithPlaceholder(top, placeholder= 'TIME SELECTED')
         self.tbHour.pack(fill= 'both', expand= True, padx= 10, pady= 10)
