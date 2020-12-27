@@ -33,9 +33,12 @@ class MyThreadingVideo:
     def VideoThread(self):
         # Predict cho moi 20Frames Anh tai day
         transfer = cf.fun_getTransferValue_EDIT(pathVideoOrListFrame= self.frames, modelVGG16= self.vgg16_model)
-        pre, real = libs.fun_predict(modelLSTM= self.lstm_model, transferValue=transfer)
-        conv = cf.VIDEO_NAMES_DETAIL[pre] if real > 0.7 else 'NO'
-        text = 'Predict: {0} -> Real: [ {1} ]'.format(conv, real) if conv != 'NO' else ''
+        pre, real = libs.fun_predict(modelLSTM= self.lstm_model, transferValue=transfer, isPrint= True)
+        print(transfer.shape)
+        print('* ' *10)
+        print(self.lstm_model.layers[0].input_shape)
+        conv = cf.VIDEO_NAMES_DETAIL[pre] 
+        text = 'Predict: {0} -> Real: [ {1} ]'.format(conv, real)
 
         if self.lbShow is not None:
             # Show thread video
@@ -45,4 +48,4 @@ class MyThreadingVideo:
                 self.lbShow.image = image
                 
         self.lbShowKetQua.config(text= text)
-        self.treeAction.fun_saveVideoDetection(frames= self.frames, fol= cf.VIDEO_NAMES[pre])
+        # self.treeAction.fun_saveVideoDetection(frames= self.frames, fol= cf.VIDEO_NAMES[pre])
