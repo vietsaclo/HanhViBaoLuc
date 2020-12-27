@@ -2,6 +2,10 @@ import os
 import cv2
 import sys
 import zipfile
+from PIL import Image
+from PIL import ImageTk
+import numpy as np
+from datetime import datetime, timedelta
 
 def fun_print(name: str, value) -> None:
     print('@ Deep Learning> ', name)
@@ -83,7 +87,7 @@ def fun_resizeFrames(frames: list, size: tuple = (224, 224)) -> list:
     return imgs
 
 
-def fun_saveFramesToVideo(frames: list, path: str, fps: int = 25) -> bool:
+def fun_saveFramesToVideo(frames: list, path: str, fps: int = 30) -> bool:
     try:
         height, width, layer = frames[0].shape
         wr = cv2.VideoWriter(path, cv2.VideoWriter_fourcc(*'MJPG'), fps, (width, height))
@@ -95,6 +99,7 @@ def fun_saveFramesToVideo(frames: list, path: str, fps: int = 25) -> bool:
 
     except:
         fun_print(name='Write Video: '+path, value='ERROR TO WRITE VIDEO')
+        cv2.destroyAllWindows()
         return False
 
 def fun_getSizeOfFrame(frame) -> tuple:
@@ -102,25 +107,23 @@ def fun_getSizeOfFrame(frame) -> tuple:
     return (width, height)
 
 # version 1
-def fun_outListVideoWithNumFrame(pathVideoLoad: str, dirToSave: str, preFixName: str, videoNameIndex: int= None, countFrame: int = 40, fps: int = 25, isShowCalculating: bool = False) -> int:
-    if videoNameIndex is None:
-        fun_print('fun_outListVideoWithNumFrame', 'Please input para: videoNameIndex')
-        return 0
-
+def fun_outListVideoWithNumFrame(dirInput: str, fileName: str, dirToSave: str, countFrame: int = 30, fps: int = 30, isShowCalculating: bool = False, isResize: bool= False):
     all = 0
     countWriten = 0
+
+    pathVideo = dirInput + '/' + fileName
     if isShowCalculating:
         fun_print('Calculator Video Out Frame', 'calculating...')
-        all = fun_getFramesOfVideo_ALL(pathVideoLoad)
+        all = fun_getFramesOfVideo_ALL(pathVideo)
         all = len(all) // countFrame
 
-    cap = cv2.VideoCapture(pathVideoLoad)
+    cap = cv2.VideoCapture(pathVideo)
     isContinue, frame = cap.read()
-    count = videoNameIndex
+    count = 1
     while True:
         if not isContinue:
             break
-        nameFile = dirToSave + preFixName + '_out_'+str(count)+'.avi'
+        nameFile = dirToSave + '/' + fileName[0:len(fileName)-4] + '_[out_large_'+str(count)+'].avi'
         cFrame = countFrame
         frames = []
 
@@ -137,6 +140,8 @@ def fun_outListVideoWithNumFrame(pathVideoLoad: str, dirToSave: str, preFixName:
             break
 
         # write list frame
+        if isResize:
+            frames = fun_resizeFrames(frames= frames)
         res = fun_saveFramesToVideo(frames=frames, path=nameFile, fps=fps)
         countWriten += 1
         if res:
@@ -155,7 +160,6 @@ def fun_outListVideoWithNumFrame(pathVideoLoad: str, dirToSave: str, preFixName:
 
     cap.release()
     cv2.destroyAllWindows()
-    return count
 
 def fun_extractZipFile(pathFileZip: str, pathToSave: str) -> None:
     if not os.path.exists(pathToSave):
@@ -189,3 +193,76 @@ def fun_makeCenter(win):
     y = win.winfo_screenheight() // 2 - win_height // 2
     win.geometry('{}x{}+{}+{}'.format(width, height, x, y))
     win.deiconify()
+
+def fun_makeMaximumSize(root):
+    # w, h = root.winfo_screenwidth(), root.winfo_screenheight()
+    # root.geometry("%dx%d+0+0" % (w, h))
+    root.state('zoomed')
+
+def fun_cv2_imageArrayToImage(containerFather, frame, reSize=None):
+    if reSize is None:
+        winWidth = int(containerFather.winfo_width() * 0.9)
+        winHeight = int(containerFather.winfo_height() * 0.9)
+        frame = cv2.resize(frame, dsize=(winWidth, winHeight))
+    elif isinstance(reSize, float):
+        winWidth = int(containerFather.winfo_width() * reSize)
+        winHeight = int(containerFather.winfo_height() * reSize)
+        frame = cv2.resize(frame, dsize=(winWidth, winHeight))
+    else:
+        frame = cv2.resize(frame, dsize= reSize)
+    image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    image = Image.fromarray(image)
+    image = ImageTk.PhotoImage(image)
+    return image
+
+def fun_predict(modelLSTM, transferValue, isPrint: bool= False):
+    arrPre = []
+    arrPre.append(transferValue)
+    Real = modelLSTM.predict(np.array(arrPre))
+    pre = np.argmax(Real)
+
+    if isPrint:
+      print(Real, pre)
+      print('\r')
+    return pre, fun_MAX(Real[0])
+
+def fun_MAX(arr):
+    max = arr[0]
+    count = 0
+    for x in arr:
+        if x > 0.09999999999 and x < 0.9999999999:
+            count += 1
+        if x > max:
+            max = x
+    if count == 3:
+        return -1
+    return max
+
+def fun_getCurrentTime():
+    time = datetime.now().isoformat()
+    res = ''
+    for c in time:
+        if c == '-' or c == ':' or c == '.':
+            res += '_'
+        else:
+            res += c
+    
+    tmps = res.split('T')
+    left = tmps[0].split('_')
+    right = tmps[1].split('_')
+
+    # Y_M_D_h_m_s
+    time = '{0}_{1}_{2}_{3}_{4}_{5}'.format(left[0], left[1], left[2], right[0], right[1], right[2])
+
+    return res, time
+
+def fun_dayMinus(dayFrom:str, dayTo:str):
+    Y, M, D, h, m, s = 0, 1, 2, 3, 4, 5
+    dayF = dayFrom.split('_')
+    dayT = dayTo.split('_')
+
+    dT = datetime(int(dayT[Y]), int(dayT[M]), int(dayT[D]), int(dayT[h]), int(dayT[m]), int(dayT[s]))
+    dF = datetime(int(dayF[Y]), int(dayF[M]), int(dayF[D]), int(dayF[h]), int(dayF[m]), int(dayF[s]))
+    
+    res = str(dT - dF);
+    return res[0] != '-', res
