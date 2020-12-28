@@ -173,7 +173,7 @@ def fun_extractZipFile(pathFileZip: str, pathToSave: str) -> None:
 
 def fun_print_process(count: int, max: int, mess: str = 'Processing: ') -> None:
   process = count / max
-  mess = '\r - ' + str(count) + '/' + str(max) + ' | ' +  mess + ' [{0:.1%}]'.format(process)
+  mess = '\r - ' +  mess + str(process * 100) + '% | ' + str(count) + '/' + str(max)
   sys.stdout.write(mess)
   sys.stdout.flush()
 
