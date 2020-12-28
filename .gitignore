@@ -153,3 +153,4 @@ videos/
 *.avi
 Datatest/
 settings.json
+*.weights
