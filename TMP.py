@@ -1,7 +1,15 @@
-from datetime import datetime, timedelta
 from Modules import PublicModules as libs
-    
-isCheck, res = libs.fun_dayMinus(dayFrom= '2020_12_22_0_8_0', dayTo= '2020_12_20_0_0_0')
 
-print(isCheck)
-print(res)
+frames1 = libs.fun_getFramesOfVideo(path= 'FileOutput/out.avi')
+
+frames2 = libs.fun_getFramesOfVideo(path= 'FileOutput/out2.avi')
+
+res = []
+for x in frames1:
+    res.append(x)
+
+for x in frames2:
+    res.append(x)
+
+libs.fun_saveFramesToVideo(res, 'FileOutput/kq.avi')
+print('fn')

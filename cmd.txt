@@ -1,0 +1,1 @@
+python YOLO_MyCustom.py -i cam2.jpg -cl yolov3.txt -w yolov3.weights -c yolov3.cfg
