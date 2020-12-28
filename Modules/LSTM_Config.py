@@ -199,11 +199,11 @@ def fun_getTransferValue_EDIT(pathVideoOrListFrame, modelVGG16):
 
     # # Pre-allocate input-batch-array for images.
     # shape = (NUM_FRAME_INPUT_LSTM,) + SIZE + (3,)
-    #
+    
     # image_batch = np.zeros(shape=shape, dtype=np.float16)
-    #
+    
     # image_batch = resul
-    #
+    
     # # Pre-allocate output-array for transfer-values.
     # # Note that we use 16-bit floating-points to save memory.
     # shape = (NUM_FRAME_INPUT_LSTM, TRANSFER_VALUE_SIZE)
@@ -471,7 +471,7 @@ def fun_showAnalysis(history):
     plt.show()
 
 def fun_loadModelLSTM():
-    modelLSTM = fun_getModelLSTM_6(num_classify= NUM_CLASSIFY)
+    modelLSTM = fun_getModelLSTM_2(num_classify= NUM_CLASSIFY)
     modelLSTM.load_weights(filepath= DIR_MODEL_LSTM)
     return modelLSTM
 
