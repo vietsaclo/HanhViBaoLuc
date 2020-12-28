@@ -80,8 +80,9 @@ net = cv2.dnn.readNet(args.weights, args.config)
 
 start = time.time()
 
-def fun_outVideoBackBackground(frames, pathSave: str):
+def fun_outVideoBackBackground(frames, pathSave: str, pathSave2: str):
     result = []
+    result2 = []
     incree = 1
     max = len(frames)
     for image in frames:
@@ -141,37 +142,60 @@ def fun_outVideoBackBackground(frames, pathSave: str):
 
         image = image * 0
 
-        fun_blankFrame(imgsGet, image)
-        # fun_getTowImageLarge(imgsGet)
-        result.append(image)
+        image1 = image.copy()
+        image2 = image.copy()
+
+        fun_blankFrame(imgsGet, image1)
+        fun_getTowImageLarge(imgsGet, image2)
+        result.append(image1)
+        result2.append(image2)
         libs.fun_print_process(count= incree, max= max)
         incree += 1
 
     if len(frames) != 0:
         isSave = libs.fun_saveFramesToVideo(frames= result, path= pathSave)
+        isSave = libs.fun_saveFramesToVideo(frames= result2, path= pathSave2)
         if isSave:
             print('\r save video: {0} successfully'.format(pathSave))
 
 
 DIR_INPUT = 'D:/[VIET-SACLO]/input_28_12_2020/'
 DIR_OUTPUT = 'D:/[VIET-SACLO]/output_28_12_2020/'
+DIR_OUTPUT2 = 'D:/[VIET-SACLO]/output_28_12_2020_2/'
 
 # lay tat ca folder
-dirs = libs.fun_getFileNames(path= DIR_INPUT)
+dirs = [
+    'bc',
+    'cq',
+    'da',
+    'dn',
+    'kc',
+    'lg',
+    'lk',
+    'na',
+    'nc',
+    'ne',
+]
 incree = 1
 max = 400 * 10
 for fold in dirs:
     # lay ta ca file name trong fold
     fileNames = libs.fun_getFileNames(path= DIR_INPUT + fold)
     # bat dau lay mau cho moi video
-    
     for file in fileNames:
         fullPath = DIR_INPUT + fold + '/' + file
         frames = libs.fun_getFramesOfVideo(path= fullPath)
         fileOut = DIR_OUTPUT + fold + '/' + file
         if not os.path.exists(DIR_OUTPUT + fold):
             os.mkdir(DIR_OUTPUT + fold)
-        fun_outVideoBackBackground(frames= frames, pathSave= DIR_OUTPUT + fold + '/' + file)
+        if not os.path.exists(DIR_OUTPUT2 + fold):
+            os.mkdir(DIR_OUTPUT2 + fold)
+        fileOuts = libs.fun_getFileNames(path= DIR_OUTPUT + fold)
+        if fileOuts.__contains__(file):
+            print('Found {0} continue'.format(file))
+            incree += 1
+            continue
+        fun_outVideoBackBackground(frames= frames, pathSave= DIR_OUTPUT + fold + '/' + file, pathSave2= DIR_OUTPUT2 + fold + '/' + file)
         libs.fun_print_process(count= incree, max= max, mess= 'Video Black Backgroud Processing: ')
         incree += 1
 
