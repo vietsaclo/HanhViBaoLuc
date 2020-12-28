@@ -1,5 +1,6 @@
 from Modules import PublicModules as lib
 import os
+import cv2
 
 SO_LAN_CAT_VIDEO = '7'
 ID_NGUOICAT = '1'
@@ -282,6 +283,21 @@ def fun_TMP_Rename(dirInput: str):
         name = hd + '8_7_' + name
         os.renames(old= dirInput + '/' + file, new= dirInput + '/' + name)
 
+def fun_saveVideoToImages(dirVideo: str, pathSave: str):
+    fileNames = lib.fun_getFileNames(dirVideo)
+    incree = 1
+    max = len(fileNames)
+    print(max)
+    for file in fileNames:
+        countImage = 0
+        prefix = file[0:len(file) - 4]
+        frames = lib.fun_getFramesOfVideo(path= dirVideo + '/' + file)
+        for frame in frames:
+            cv2.imwrite(pathSave + '/' + prefix + '_'+str(countImage) + '.jpg', frame)
+            countImage += 1
+        lib.fun_print_process(count= incree, max= max,)
+        incree += 1
+
 if __name__ == '__main__':
     # fun_danhLaiIDChoVideoGoc(DIR_INPUT=DIR_INPUT_VDGOC, DIR_OUTPUT=DIR_OUTPUT_VDGOC)
     # fun_danhLaiIDChoVideo(DIR_INPUT=DIR_INPUT, DIR_OUTPUT=DIR_OUTPUT, DIR_OUTPUT_LARGE=DIR_OUTPUT_LARGE, IS_RESIZE=True)
@@ -307,4 +323,6 @@ if __name__ == '__main__':
 
     # fun_renameVideoOut(pathLoad= DIR_INPUT)
 
-    fun_TMP_Rename(dirInput= 'F:/TongHopDataKhoaLuan/1_ThuCong/Lan6/NgoHuyThangLan6-001/video_out')
+    # fun_TMP_Rename(dirInput= 'F:/TongHopDataKhoaLuan/1_ThuCong/Lan6/NgoHuyThangLan6-001/video_out')
+
+    fun_saveVideoToImages(dirVideo= 'C:/Users/Ghost/Desktop/cutFull/bc', pathSave= 'C:/Users/Ghost/Desktop/tmp')

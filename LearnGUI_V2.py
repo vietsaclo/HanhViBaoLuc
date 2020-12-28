@@ -205,7 +205,7 @@ class MyApp:
             _, current = libs.fun_getCurrentTime()
             _, self.down = libs.fun_dayMinus(dayFrom= current, dayTo= self.dayTo)
             try:
-                self.lbThoiGianConLai.config(text= 'Con Lai: {0} s'.format(self.down))
+                self.lbThoiGianConLai.config(text= 'Time remaining: {0} s'.format(self.down))
             except:
                 print('Thread update time down stoped but not working correct!'+ Thread.name)
             sleep(1)
@@ -219,7 +219,7 @@ class MyApp:
         )
 
         self.lbThoiGianDen = Label(self.containerTongHopMoTaPhanDoanDanh,
-        text= 'TẮT VÀO: {0} {1}h : {2}m'.format(timeDown, hourDown, minuteDown),
+        text= 'Off on time: {0} {1}h : {2}m'.format(timeDown, hourDown, minuteDown),
         padx= 10, pady= 10,
         font=('Helvetica', 18, 'bold'),
         anchor= 'w'
@@ -389,7 +389,7 @@ class MyApp:
 
         # Container con cua container containerTongHopMoTaPhanDoanDanh
         self.cbThoiGianTat = Checkbutton(self.containerTongHopMoTaPhanDoanDanh,
-        text= 'CHỌN THỜI GIAN TỰ ĐỘNG TẮT', padx= 10, pady= 10,
+        text= 'TIME SELECTION AUTO OFF', padx= 10, pady= 10,
         font=('Helvetica', 18, 'bold'),
         variable= self.isChoiseTimeDown,
         command= self.fun_chonThoiGianDen,
