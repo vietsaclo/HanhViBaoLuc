@@ -6,16 +6,21 @@ import numpy as np
 from Modules import PublicModules as libs
 import os
 
-ap = argparse.ArgumentParser()
-ap.add_argument('-i', '--image', required=True,
-                help='path to input image')
-ap.add_argument('-c', '--config', required=True,
-                help='path to yolo config file')
-ap.add_argument('-w', '--weights', required=True,
-                help='path to yolo pre-trained weights')
-ap.add_argument('-cl', '--classes', required=True,
-                help='path to text file containing class names')
-args = ap.parse_args()
+imageDetection = 'F:/imgs/bc01_0.jpg'
+weightName = 'yolov3.weights'
+configName = 'yolov3.cfg'
+className = 'yolov3.txt'
+
+# ap = argparse.ArgumentParser()
+# ap.add_argument('-i', '--image', required=True,
+#                 help='path to input image')
+# ap.add_argument('-c', '--config', required=True,
+#                 help='path to yolo config file')
+# ap.add_argument('-w', '--weights', required=True,
+#                 help='path to yolo pre-trained weights')
+# ap.add_argument('-cl', '--classes', required=True,
+#                 help='path to text file containing class names')
+# args = ap.parse_args()
 
 
 def get_output_layers(net):
@@ -75,11 +80,11 @@ def fun_blankFrame(imgs, image):
 
 classes = None
 
-with open(args.classes, 'r') as f:
+with open(className, 'r') as f:
     classes = [line.strip() for line in f.readlines()]
 
 COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
-net = cv2.dnn.readNet(args.weights, args.config)
+net = cv2.dnn.readNet(weightName, configName)
 
 start = time.time()
 
@@ -89,14 +94,13 @@ def fun_outVideoBackBackground(frames, pathSave: str, pathSave2: str):
     incree = 1
     max = len(frames)
     for image in frames:
+        startFPS = time.time()
         Width = image.shape[1]
         Height = image.shape[0]
         scale = 0.00392
 
         blob = cv2.dnn.blobFromImage(image, scale, (416, 416), (0, 0, 0), True, crop=False)
-
         net.setInput(blob)
-
         outs = net.forward(get_output_layers(net))
 
         class_ids = []
@@ -133,7 +137,7 @@ def fun_outVideoBackBackground(frames, pathSave: str, pathSave2: str):
             y = box[1]
             w = box[2]
             h = box[3]
-            draw_prediction(image, class_ids[i], confidences[i], round(x), round(y), round(x + w), round(y + h))
+            # draw_prediction(image, class_ids[i], confidences[i], round(x), round(y), round(x + w), round(y + h))
             if class_ids[i] == 0:
                 y = int(y)
                 yh = int(y + h)
@@ -154,6 +158,8 @@ def fun_outVideoBackBackground(frames, pathSave: str, pathSave2: str):
         result2.append(image2)
         libs.fun_print_process(count= incree, max= max)
         incree += 1
+        endFPS = time.time()
+        print("YOLO Execution FPS: " + str(endFPS-startFPS))
 
     if len(frames) != 0:
         isSave = libs.fun_saveFramesToVideo(frames= result, path= pathSave)
@@ -162,22 +168,13 @@ def fun_outVideoBackBackground(frames, pathSave: str, pathSave2: str):
             print('\r save video: {0} successfully'.format(pathSave))
 
 
-DIR_INPUT = 'D:/[VIET-SACLO]/input_28_12_2020/'
-DIR_OUTPUT = 'D:/[VIET-SACLO]/output_28_12_2020/'
-DIR_OUTPUT2 = 'D:/[VIET-SACLO]/output_28_12_2020_2/'
+DIR_INPUT = 'F:/tmp/'
+DIR_OUTPUT = 'F:/tmp2/'
+DIR_OUTPUT2 = 'F:/tmp3/'
 
 # lay tat ca folder
 dirs = [
     'bc',
-    'cq',
-    'da',
-    'dn',
-    'kc',
-    'lg',
-    'lk',
-    'na',
-    'nc',
-    'ne',
 ]
 incree = 1
 max = 400 * len(dirs)
