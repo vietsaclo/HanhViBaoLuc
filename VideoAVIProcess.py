@@ -302,19 +302,19 @@ if __name__ == '__main__':
     # fun_danhLaiIDChoVideoGoc(DIR_INPUT=DIR_INPUT_VDGOC, DIR_OUTPUT=DIR_OUTPUT_VDGOC)
     # fun_danhLaiIDChoVideo(DIR_INPUT=DIR_INPUT, DIR_OUTPUT=DIR_OUTPUT, DIR_OUTPUT_LARGE=DIR_OUTPUT_LARGE, IS_RESIZE=True)
 
-    filesLarge = lib.fun_getFileNames(path= DIR_INPUT_LARGE)
-    max = len(filesLarge)
-    count = 1
-    for file in filesLarge:
-        lib.fun_outListVideoWithNumFrame(
-            dirInput=DIR_INPUT_LARGE,
-            fileName=file,
-            dirToSave=DIR_OUTPUT,
-            isShowCalculating=True,
-            isResize= True
-        )
-        count += 1
-        lib.fun_print_process(count= count, max= max, mess= 'ALL PROCESS: ')
+    # filesLarge = lib.fun_getFileNames(path= DIR_INPUT_LARGE)
+    # max = len(filesLarge)
+    # count = 1
+    # for file in filesLarge:
+    #     lib.fun_outListVideoWithNumFrame(
+    #         dirInput=DIR_INPUT_LARGE,
+    #         fileName=file,
+    #         dirToSave=DIR_OUTPUT,
+    #         isShowCalculating=True,
+    #         isResize= True
+    #     )
+    #     count += 1
+    #     lib.fun_print_process(count= count, max= max, mess= 'ALL PROCESS: ')
 
     # fun_resizeVideos(pathLoad= 'D:/[KhoaLuan] Violence Detection/SuuTam/QuayClipLanCuoi', dirSave= 'D:/[KhoaLuan] Violence Detection/SuuTam/QuayClipLanCuoi_Resize')
     # fun_renameFiles(pathLoad= 'D:/[KhoaLuan] Violence Detection/SuuTam/QuayClipLanCuoi_Resize')
@@ -324,3 +324,4 @@ if __name__ == '__main__':
     # fun_renameVideoOut(pathLoad= DIR_INPUT)
 
     # fun_TMP_Rename(dirInput= 'F:/TongHopDataKhoaLuan/1_ThuCong/Lan6/NgoHuyThangLan6-001/video_out')
+    fun_saveVideoToImages(dirVideo= 'F:/tmp', pathSave= 'F:/imgs')
