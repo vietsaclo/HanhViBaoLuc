@@ -173,7 +173,7 @@ def fun_extractZipFile(pathFileZip: str, pathToSave: str) -> None:
 
 def fun_print_process(count: int, max: int, mess: str = 'Processing: ') -> None:
   process = count / max
-  mess = '\r - ' +  mess + ' [{0:.1%}]'.format(process)
+  mess = '\r - ' +  mess + str(process * 100) + '% | ' + str(count) + '/' + str(max)
   sys.stdout.write(mess)
   sys.stdout.flush()
 
@@ -224,7 +224,19 @@ def fun_predict(modelLSTM, transferValue, isPrint: bool= False):
     if isPrint:
       print(Real, pre)
       print('\r')
-    return pre, Real[0][pre]
+    return pre, fun_MAX(Real[0])
+
+def fun_MAX(arr):
+    max = arr[0]
+    count = 0
+    for x in arr:
+        if x > 0.09999999999 and x < 0.9999999999:
+            count += 1
+        if x > max:
+            max = x
+    if count == 3:
+        return -1
+    return max
 
 def fun_getCurrentTime():
     time = datetime.now().isoformat()

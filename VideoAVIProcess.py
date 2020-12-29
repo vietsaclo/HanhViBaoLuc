@@ -6,10 +6,10 @@ SO_LAN_CAT_VIDEO = '7'
 ID_NGUOICAT = '1'
 
 DIR_INPUT = 'D:/[KhoaLuan] Violence Detection/SuuTam/cqa_Lan2_001_out'
-DIR_INPUT_LARGE = 'F:/TongHopDataKhoaLuan/1_ThuCong/Lan7/NguyenCongTanLan7/video'
+DIR_INPUT_LARGE = 'D:/[TMP]/DataViolence 2'
 DIR_INPUT_VDGOC = 'D:\\[LuanAn_BaoLuc2]\\4_TMP\\NguyenVanHieuLan1\\video'
 
-DIR_OUTPUT = 'F:/TongHopDataKhoaLuan/1_ThuCong/Lan7/NguyenCongTanLan7/out_tmp'
+DIR_OUTPUT = 'D:/[TMP]/DataViolence 2_out'
 DIR_OUTPUT_LARGE = 'F:/TongHopDataKhoaLuan/3_KetQuaChuanHoa/out_video_large'
 DIR_OUTPUT_VDGOC = 'D:\\[LuanAn_BaoLuc2]\\3_KetQuaChuanHoa\\video_goc'
 
@@ -302,19 +302,19 @@ if __name__ == '__main__':
     # fun_danhLaiIDChoVideoGoc(DIR_INPUT=DIR_INPUT_VDGOC, DIR_OUTPUT=DIR_OUTPUT_VDGOC)
     # fun_danhLaiIDChoVideo(DIR_INPUT=DIR_INPUT, DIR_OUTPUT=DIR_OUTPUT, DIR_OUTPUT_LARGE=DIR_OUTPUT_LARGE, IS_RESIZE=True)
 
-    # filesLarge = lib.fun_getFileNames(path= DIR_INPUT_LARGE)
-    # max = len(filesLarge)
-    # count = 1
-    # for file in filesLarge:
-    #     lib.fun_outListVideoWithNumFrame(
-    #         dirInput=DIR_INPUT_LARGE,
-    #         fileName=file,
-    #         dirToSave=DIR_OUTPUT,
-    #         isShowCalculating=True,
-    #         isResize= False
-    #     )
-    #     count += 1
-    #     lib.fun_print_process(count= count, max= max, mess= 'ALL PROCESS: ')
+    filesLarge = lib.fun_getFileNames(path= DIR_INPUT_LARGE)
+    max = len(filesLarge)
+    count = 1
+    for file in filesLarge:
+        lib.fun_outListVideoWithNumFrame(
+            dirInput=DIR_INPUT_LARGE,
+            fileName=file,
+            dirToSave=DIR_OUTPUT,
+            isShowCalculating=True,
+            isResize= True
+        )
+        count += 1
+        lib.fun_print_process(count= count, max= max, mess= 'ALL PROCESS: ')
 
     # fun_resizeVideos(pathLoad= 'D:/[KhoaLuan] Violence Detection/SuuTam/QuayClipLanCuoi', dirSave= 'D:/[KhoaLuan] Violence Detection/SuuTam/QuayClipLanCuoi_Resize')
     # fun_renameFiles(pathLoad= 'D:/[KhoaLuan] Violence Detection/SuuTam/QuayClipLanCuoi_Resize')
@@ -324,5 +324,3 @@ if __name__ == '__main__':
     # fun_renameVideoOut(pathLoad= DIR_INPUT)
 
     # fun_TMP_Rename(dirInput= 'F:/TongHopDataKhoaLuan/1_ThuCong/Lan6/NgoHuyThangLan6-001/video_out')
-
-    fun_saveVideoToImages(dirVideo= 'C:/Users/Ghost/Desktop/cutFull/bc', pathSave= 'C:/Users/Ghost/Desktop/tmp')

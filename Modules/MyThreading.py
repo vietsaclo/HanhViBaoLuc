@@ -32,6 +32,8 @@ class MyThreadingVideo:
 
     def VideoThread(self):
         # Predict cho moi 20Frames Anh tai day
+        self.lbFather.config(bg='#c1ffe5')
+
         transfer = cf.fun_getTransferValue_EDIT(pathVideoOrListFrame= self.frames, modelVGG16= self.vgg16_model)
         pre, real = libs.fun_predict(modelLSTM= self.lstm_model, transferValue=transfer, isPrint= True)
         conv = cf.VIDEO_NAMES_DETAIL[pre] if real > 0.5 else 'NO'
@@ -43,7 +45,8 @@ class MyThreadingVideo:
                 image = libs.fun_cv2_imageArrayToImage(containerFather= self.lbFather, frame= frame.copy(), reSize= 0.8)
                 self.lbShow.config(image= image)
                 self.lbShow.image = image
-                
+
+        self.lbFather.config(bg= 'red')
         self.lbShowKetQua.config(text= text)
 
         if text != '':
