@@ -53,6 +53,8 @@ def fun_getY_YH_X_XW(yx):
     return yx[0], yx[1], yx[2], yx[3]
 
 def fun_getTowImageLarge(imgs, image):
+    if (len(imgs)) == 0:
+        return
     fun_sort_desc(imgs)
     res = []
     res.append(imgs[0][0])
