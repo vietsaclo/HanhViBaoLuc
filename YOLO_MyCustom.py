@@ -54,12 +54,13 @@ def fun_getY_YH_X_XW(yx):
 
 def fun_getTowImageLarge(imgs, image):
     fun_sort_desc(imgs)
-    s1 = fun_sumWidthHeight(imgs[0][0])
-    s2 = fun_sumWidthHeight(imgs[1][0])
     res = []
     res.append(imgs[0][0])
-    if s1 - s2 < 40:
-        res.append(imgs[1][0])
+    if (len(imgs) > 1):
+        s1 = fun_sumWidthHeight(imgs[0][0])
+        s2 = fun_sumWidthHeight(imgs[1][0])
+        if s1 - s2 < 40:
+            res.append(imgs[1][0])
 
     for i in range(0, len(res)):
         y, yh, x, xw = fun_getY_YH_X_XW(imgs[i][1])
