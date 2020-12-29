@@ -180,7 +180,7 @@ dirs = [
     'ne',
 ]
 incree = 1
-max = 400 * 10
+max = 400 * len(dirs)
 for fold in dirs:
     # lay ta ca file name trong fold
     fileNames = libs.fun_getFileNames(path= DIR_INPUT + fold)
@@ -200,6 +200,7 @@ for fold in dirs:
             continue
         fun_outVideoBackBackground(frames= frames, pathSave= DIR_OUTPUT + fold + '/' + file, pathSave2= DIR_OUTPUT2 + fold + '/' + file)
         libs.fun_print_process(count= incree, max= max, mess= 'Video Black Backgroud Processing: ')
+        print('Processing: {0}/{1}'.format(incree, max))
         incree += 1
 
 
