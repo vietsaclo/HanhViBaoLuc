@@ -59,23 +59,23 @@ VIDEO_NAMES = [
 ]
 
 VIDEO_NAMES_DETAIL = [
-    'bc',
-    'cq',
-    'da',
-    'dn',
-    'kc',
-    'lg',
-    'lk',
-    'na',
-    'nc',
-    'ne',
-    'nt',
-    'om',
-    'tc',
-    'vk',
-    'xd',
-    'xt',
-    'no'
+    'bc - Bop Co',
+    'cq - Coi Quan Ao',
+    'da - Da, Dap',
+    'dn - Danh, Tat',
+    'kc - Kep Co',
+    'lg - Len Goi',
+    'lk - Loi Keo',
+    'na - Nan Nhan Nam',
+    'nc - Nam Co',
+    'ne - Nem Do Vat',
+    'nt - Nam Toc',
+    'om - Om, Vat Lon',
+    'tc - Thu The Vo',
+    'vk - Vat, Vu Khi',
+    'xd - Xo Day',
+    'xt - Xi Tay',
+    ''# Khong co hanh dong bao luc
 ]
 
 VIDEO_LABELS = [
@@ -471,7 +471,7 @@ def fun_showAnalysis(history):
     plt.show()
 
 def fun_loadModelLSTM():
-    modelLSTM = fun_getModelLSTM_2(num_classify= NUM_CLASSIFY)
+    modelLSTM = fun_getModelLSTM_6(num_classify= NUM_CLASSIFY)
     modelLSTM.load_weights(filepath= DIR_MODEL_LSTM)
     return modelLSTM
 

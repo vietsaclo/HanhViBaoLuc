@@ -137,10 +137,10 @@ class ChoseSourceWindow:
     def fun_checkVideoFromSource(self, source: str):
         try:
             frames = libs.fun_getFramesOfVideo(path=source, count=20)
-            messagebox.showinfo('Thong Bao', 'Check Video Load OK, Video Size: {0}'.format(frames[0].shape))
+            messagebox.showinfo('Notification!', 'Check Video Load OK, Video Size: {0}'.format(frames[0].shape))
             return True
         except:
-            messagebox.showerror('Thong Bao', 'Yeu Cau khong duoc chap nhan!')
+            messagebox.showerror('Error!', 'Request is not accepted')
             return False
 
     def fun_getURL_IPCam(self, ip: str):
@@ -221,7 +221,7 @@ class MyApp:
 
     def fun_hienThoiGianDen_Con(self, timeDown: str, hourDown:int, minuteDown:int):
         self.lbThoiGianConLai = Label(self.containerTongHopMoTaPhanDoanDanh,
-        text= 'CÒN LẠI: {0} s'.format(self.down),
+        text= 'Time remaining: {0} s'.format(self.down),
         padx= 10, pady= 10,
         font=('Helvetica', 18, 'bold'),
         anchor= 'w'
@@ -270,7 +270,7 @@ class MyApp:
         self.root.wait_window(top)
 
         if self.TIME_DOWN is None:
-            messagebox.showwarning('Thong bao!', 'Chon time that bai')
+            messagebox.showwarning('Notification!', 'Time to automatically turn off failure')
             self.isChoiseTimeDown.set(0)
             self.cbThoiGianTat.config(bg= 'white')
             return
@@ -282,7 +282,7 @@ class MyApp:
         isCheck, down = libs.fun_dayMinus(dayFrom= curent, dayTo= dayTo)
 
         if not isCheck:
-            messagebox.showerror('Thong bao!', 'Chon time that bai')
+            messagebox.showerror('Notification!', 'Time to automatically turn off failure')
             self.isChoiseTimeDown.set(0)
             self.cbThoiGianTat.config(bg= 'white')
             return
@@ -472,7 +472,7 @@ class MyApp:
         self.root.wait_window(self.app.master)
         # Hanh dong khong duoc xac thuc tu nguoi dung -> ket thuc
         if not self.app.DIALOG_OK:
-            messagebox.showwarning('Thong Bao', 'Chon nguon video that bai')
+            messagebox.showwarning('Notification!', 'Failed video source selection')
             return
         # Hang dong duoc xac thuc tu phai nguoi dung
         self.URL_VIDEO = self.app.RETURN_RESULT

@@ -35,9 +35,9 @@ class MyThreadingVideo:
         self.lbFather.config(bg='#c1ffe5')
 
         transfer = cf.fun_getTransferValue_EDIT(pathVideoOrListFrame= self.frames, modelVGG16= self.vgg16_model)
-        pre, real = libs.fun_predict(modelLSTM= self.lstm_model, transferValue=transfer, isPrint= True)
-        conv = cf.VIDEO_NAMES_DETAIL[pre] if real > 0.5 else 'NO'
-        text = 'Predict: {0} -> Real: [ {1} ]'.format(conv, real) if conv != 'NO' else ''
+        pre, real = libs.fun_predict(modelLSTM= self.lstm_model, transferValue=transfer)
+        conv = cf.VIDEO_NAMES_DETAIL[pre] if real > 0.73 else ''
+        text = 'Predict: {0} [ {1:.4f} ]'.format(conv, real)
 
         if self.lbShow is not None:
             # Show thread video
