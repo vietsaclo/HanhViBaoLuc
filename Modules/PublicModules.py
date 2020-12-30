@@ -16,13 +16,13 @@ def fun_getFileNames(path: str) -> list:
     return os.listdir(path)
 
 
-def fun_showVideoPath(path: str, delay: int = 25) -> None:
+def fun_showVideoPath(path: str, delay: int = 25, title= 'frame') -> None:
     cap = cv2.VideoCapture(path)
     isContinue, frame = cap.read()
     while True:
         if not isContinue:
             break
-        cv2.imshow('frame', frame)
+        cv2.imshow(title, frame)
         if cv2.waitKey(delay=delay) & 0xFF == ord('q'):
             break
         isContinue, frame = cap.read()
@@ -31,7 +31,7 @@ def fun_showVideoPath(path: str, delay: int = 25) -> None:
     cv2.destroyAllWindows()
 
 
-def fun_getFramesOfVideo(path: str, count: int = 20) -> list:
+def fun_getFramesOfVideo(path: str, count: int = 30) -> list:
     cap = cv2.VideoCapture(path)
     isContinue, frame = cap.read()
     imgs = []
@@ -59,18 +59,18 @@ def fun_getFramesOfVideo_ALL(path: str) -> list:
     return imgs
 
 
-def fun_showVideoFrames(frames: list, delay: int = 25) -> None:
+def fun_showVideoFrames(frames: list, delay: int = 30, title= 'frame') -> None:
     for frame in frames:
-        cv2.imshow('frame', frame)
+        cv2.imshow(title, frame)
         if cv2.waitKey(delay=delay) & 0xFF == ord('q'):
             break
 
 
-def fun_showVideo(source, delay: int = 25) -> None:
+def fun_showVideo(source, delay: int = 30, title= 'frame') -> None:
     if isinstance(source, str):
-        fun_showVideoPath(path=source, delay=delay)
+        fun_showVideoPath(path=source, delay=delay, title= title)
     else:
-        fun_showVideoFrames(frames=source, delay=delay)
+        fun_showVideoFrames(frames=source, delay=delay, title= title)
 
 
 def fun_resizeFrames(frames: list, size: tuple = (224, 224)) -> list:
