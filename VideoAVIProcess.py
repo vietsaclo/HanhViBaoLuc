@@ -278,9 +278,9 @@ def fun_renameVideoOut(pathLoad: str):
 def fun_TMP_Rename(dirInput: str):
     fileNames = lib.fun_getFileNames(path= dirInput)
     for file in fileNames:
-        hd = file[0:2]
-        name = file[2:]
-        name = hd + '8_7_' + name
+        hd = 'no1_8_'
+        name = file
+        name = hd + name
         os.renames(old= dirInput + '/' + file, new= dirInput + '/' + name)
 
 def fun_saveVideoToImages(dirVideo: str, pathSave: str):
@@ -297,6 +297,81 @@ def fun_saveVideoToImages(dirVideo: str, pathSave: str):
             countImage += 1
         lib.fun_print_process(count= incree, max= max,)
         incree += 1
+
+def fun_decodeList(lst: list):
+    arr = []
+    for line in lst:
+        l = line.decode('utf-8')
+        arr.append(l)
+
+    return arr
+
+def fun_readAllLine(path: str):
+    with open(file= path, mode= 'rb') as f:
+        lines = f.readlines()
+        lines = fun_decodeList(lines)
+
+    _6800 = lib.fun_getVideoLabelNames_EachFolder(path= 'G:/TongHopDataKhoaLuan/[TrainQuaCacLan]')
+    
+    return lines, _6800
+
+def fun_checkExists(listCheck: str, name):
+    for line in listCheck:
+        if line.__contains__(name):
+            return True, line
+    return False, None
+
+def fun_makeLine(record: str):
+    hanhDong = 0
+    soLanCat = 1
+    tenVideoGoc = 2
+    _id = 3
+    loai = 4
+    tenVideoSua = 5
+    thoiGian = 6
+    hopNhat = 7
+
+    items = record.split('\t')
+    return '{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}'.format(items[hanhDong],
+    items[soLanCat], '[{0}]'.format(items[tenVideoGoc]), '[{0}]'.format(items[_id]), items[loai], items[tenVideoSua], 
+    items[thoiGian], items[hopNhat])
+
+def fun_makeLine2(vidName: str):
+    hd = fun_getHanhDong(vidName)
+    _idNguoiCat = fun_getID(vidName)
+    hd += _idNguoiCat
+    name = fun_getVideoName(vidName)
+    soLanCat = name[0:name.find('_')]
+    tenVideoSua = name[0:name.find('_', name.find('_')+1)]
+    _idVideo = name[len(tenVideoSua)+1:]
+    tenVideoGoc = tenVideoSua[tenVideoSua.find('_')+1:]
+    tenVideoSua = _idNguoiCat + '_'+ tenVideoSua
+    loai = 'Loai 1'
+    if _idVideo[len(_idVideo)-1:] != ']':
+        _idVideo = '[{0}]'.format(_idVideo)
+    result = '{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\n'.format(hd,
+    soLanCat, '[{0}]'.format(tenVideoGoc), _idVideo, loai, tenVideoSua, 
+    'Not Found', vidName)
+    return result
+
+def fun_matchRecord(path: str):
+    origin, _6800 = fun_readAllLine(path= path)
+    # print('len origin: '+ str(len(origin)))
+    # print('len _6800: '+ str(len(_6800)))
+
+    incree = 0
+    _max = len(_6800)
+    count = 0
+    with open('FileInput/out2.txt', 'wb') as f:
+        for vidName in _6800:
+            name = vidName[0:len(vidName)-4]
+            isExists, _ = fun_checkExists(listCheck= origin, name= name)
+            if not isExists:
+                f.write(fun_makeLine2(vidName).encode())
+                count += 1
+            lib.fun_print_process(count= incree, max= _max)
+            incree += 1
+        lib.fun_print(name= 'len not match: ', value= str(count))
 
 if __name__ == '__main__':
     # fun_danhLaiIDChoVideoGoc(DIR_INPUT=DIR_INPUT_VDGOC, DIR_OUTPUT=DIR_OUTPUT_VDGOC)
@@ -324,4 +399,8 @@ if __name__ == '__main__':
     # fun_renameVideoOut(pathLoad= DIR_INPUT)
 
     # fun_TMP_Rename(dirInput= 'F:/TongHopDataKhoaLuan/1_ThuCong/Lan6/NgoHuyThangLan6-001/video_out')
-    fun_saveVideoToImages(dirVideo= 'F:/tmp', pathSave= 'F:/imgs')
+    # fun_saveVideoToImages(dirVideo= 'F:/tmp', pathSave= 'F:/imgs')
+    # fun_TMP_Rename(dirInput= 'G:/TongHopDataKhoaLuan/[TrainQuaCacLan]/no')
+    # fun_readAllLine(path= 'FileInput/11333.txt')
+    fun_matchRecord(path= 'FileInput/11333.txt')
+    # fun_makeLine2('tc2_7_1000_001_20F.avi')

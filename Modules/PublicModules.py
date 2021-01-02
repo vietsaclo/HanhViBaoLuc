@@ -86,6 +86,17 @@ def fun_resizeFrames(frames: list, size: tuple = (224, 224)) -> list:
     cv2.destroyAllWindows()
     return imgs
 
+# Danh nhan video
+def fun_getVideoLabelNames_EachFolder(path: str):
+    names = []
+
+    for fol in os.listdir(path):
+        folder = path + '/' + fol
+        fileNames = fun_getFileNames(path=folder)
+        for file in fileNames:
+            names.append(file)
+
+    return names
 
 def fun_saveFramesToVideo(frames: list, path: str, fps: int = 30) -> bool:
     try:
@@ -173,7 +184,7 @@ def fun_extractZipFile(pathFileZip: str, pathToSave: str) -> None:
 
 def fun_print_process(count: int, max: int, mess: str = 'Processing: ') -> None:
   process = count / max
-  mess = '\r - ' +  mess + str(process * 100) + '% | ' + str(count) + '/' + str(max)
+  mess = '\r - ' +  mess + '{0:.2f}'.format(process * 100) + '% | ' + str(count) + '/' + str(max)
   sys.stdout.write(mess)
   sys.stdout.flush()
 
