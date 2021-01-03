@@ -275,13 +275,16 @@ def fun_renameVideoOut(pathLoad: str):
         lib.fun_print_process(count=incree, max=max, mess='Rename Video Processing: ')
         incree += 1
 
-def fun_TMP_Rename(dirInput: str):
+def fun_TMP_Rename(_id: int, lanCat: int, dirInput: str, isCheckFirst: False):
     fileNames = lib.fun_getFileNames(path= dirInput)
     for file in fileNames:
-        hd = 'no1_8_'
-        name = file
-        name = hd + name
-        os.renames(old= dirInput + '/' + file, new= dirInput + '/' + name)
+        name = '{0}_{1}_{2}{3}'.format(_id, lanCat, file[0:len(file)-4], file[len(file)-4:])
+        if name.__contains__('-'):
+            name = name.replace('-', '')
+        if isCheckFirst:
+            print(name)
+        else:
+            os.renames(old= dirInput + '/' + file, new= dirInput + '/' + name)
 
 def fun_saveVideoToImages(dirVideo: str, pathSave: str):
     fileNames = lib.fun_getFileNames(dirVideo)
@@ -402,5 +405,12 @@ if __name__ == '__main__':
     # fun_saveVideoToImages(dirVideo= 'F:/tmp', pathSave= 'F:/imgs')
     # fun_TMP_Rename(dirInput= 'G:/TongHopDataKhoaLuan/[TrainQuaCacLan]/no')
     # fun_readAllLine(path= 'FileInput/11333.txt')
-    fun_matchRecord(path= 'FileInput/11333.txt')
+    # fun_matchRecord(path= 'FileInput/11333.txt')
     # fun_makeLine2('tc2_7_1000_001_20F.avi')
+    fun_TMP_Rename(
+        _id= 6,
+        lanCat= 1,
+        dirInput= 'G:/TongHopDataKhoaLuan/1_ThuCong/Lan1/TruongHongPhiLan1/Video',
+        isCheckFirst= False
+    )
+    
