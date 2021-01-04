@@ -277,3 +277,7 @@ def fun_dayMinus(dayFrom:str, dayTo:str):
     
     res = str(dT - dF);
     return res[0] != '-', res
+
+def fun_makeDir(directory: str):
+    if not os.path.exists(directory):
+        os.mkdir(directory)
