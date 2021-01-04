@@ -376,6 +376,32 @@ def fun_matchRecord(path: str):
             incree += 1
         lib.fun_print(name= 'len not match: ', value= str(count))
 
+def fun_get5FrameOfVideo(dirInput: str, dirOutput: str):
+    folders = lib.fun_getFileNames(path= dirInput)
+    incree = 1
+    _max = len(folders) * 400
+    for fod in folders:
+        filesName = lib.fun_getFileNames(path= dirInput + '/' + fod)
+        for _file in filesName:
+            pathIn = dirInput + '/' + fod + '/' + _file
+            lib.fun_makeDir(directory= dirOutput + '/' + fod)
+            pathOut = dirOutput + '/' + fod + '/' + _file
+            if not os.path.exists(pathOut):
+                frames = lib.fun_getFramesOfVideo(path= pathIn, count= 25)
+                result = fun_get5FrameOfVideoFrames(frames= frames)
+                lib.fun_saveFramesToVideo(frames= result, path= pathOut)
+            lib.fun_print_process(count= incree, max= _max)
+            incree += 1
+
+def fun_get5FrameOfVideoFrames(frames: list, startID: int= 3):
+    result = []
+    _id = startID
+    result.append(frames[_id].copy())
+    for _ in range(0, 4):
+        result.append(frames[_id + 5].copy())
+        _id += 5
+    return result
+
 if __name__ == '__main__':
     # fun_danhLaiIDChoVideoGoc(DIR_INPUT=DIR_INPUT_VDGOC, DIR_OUTPUT=DIR_OUTPUT_VDGOC)
     # fun_danhLaiIDChoVideo(DIR_INPUT=DIR_INPUT, DIR_OUTPUT=DIR_OUTPUT, DIR_OUTPUT_LARGE=DIR_OUTPUT_LARGE, IS_RESIZE=True)
@@ -402,15 +428,27 @@ if __name__ == '__main__':
     # fun_renameVideoOut(pathLoad= DIR_INPUT)
 
     # fun_TMP_Rename(dirInput= 'F:/TongHopDataKhoaLuan/1_ThuCong/Lan6/NgoHuyThangLan6-001/video_out')
+
     # fun_saveVideoToImages(dirVideo= 'F:/tmp', pathSave= 'F:/imgs')
+
     # fun_TMP_Rename(dirInput= 'G:/TongHopDataKhoaLuan/[TrainQuaCacLan]/no')
+
     # fun_readAllLine(path= 'FileInput/11333.txt')
+
     # fun_matchRecord(path= 'FileInput/11333.txt')
+
     # fun_makeLine2('tc2_7_1000_001_20F.avi')
-    fun_TMP_Rename(
-        _id= 6,
-        lanCat= 1,
-        dirInput= 'G:/TongHopDataKhoaLuan/1_ThuCong/Lan1/TruongHongPhiLan1/Video',
-        isCheckFirst= False
+
+    # fun_TMP_Rename(
+    #     _id= 6,
+    #     lanCat= 1,
+    #     dirInput= 'G:/TongHopDataKhoaLuan/1_ThuCong/Lan1/TruongHongPhiLan1/Video',
+    #     isCheckFirst= False
+    # )
+    
+    fun_get5FrameOfVideo(
+        dirInput= 'G:/TongHopDataKhoaLuan/[TrainQuaCacLan]',
+        dirOutput= 'G:/TongHopDataKhoaLuan/4_TMP/tmp'
     )
     
+
