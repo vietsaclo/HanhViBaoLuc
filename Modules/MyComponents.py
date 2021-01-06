@@ -5,6 +5,7 @@ from Modules import PublicModules as libs
 import os
 
 PATH_SAVE_DETECTION = 'FileOutput/Detection'
+LEN_ID_TREE_ITEM = 6
 
 class TreeActionDetection:
     def __init__(self, containerFather):
@@ -35,6 +36,18 @@ class TreeActionDetection:
 
         # Expand toan bo treee view
         self.open_children(self.tree.focus())
+
+        # set double clicked
+        self.tree.bind('<Double-1>', self.fun_onDoubleClicked)
+
+    def fun_onDoubleClicked(self, event):
+        item = self.tree.selection()[0]
+        value = self.tree.item(item, 'text')
+        if len(item) == 6:
+            return
+        dirs = value[0:2]
+        dirs = PATH_SAVE_DETECTION + '/' + dirs + '/' + value
+        libs.fun_showVideo(source= dirs, title= value)
 
     def fun_load16Folder(self):
         self.arr16Folder = []

@@ -154,3 +154,4 @@ videos/
 Datatest/
 settings.json
 *.weights
+FileInput/Test/

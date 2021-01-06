@@ -19,7 +19,7 @@ DIR_INPUT_TEST1 = DIR_ROOT + 'Data/Test1'
 DIR_INPUT_VALIDATION = DIR_ROOT + 'Data/Validation'
 DIR_INPUT_SHOW_VIDEO_TEST = DIR_ROOT + 'Data/ShowVideoTest'
 DIR_INPUT_SHOW_VIDEO_TRAIN = DIR_ROOT + 'Data/ShowVideoTrain'
-DIR_MODEL_LSTM = DIR_ROOT + 'Modules/LSTM_Model_17PL_27_12_2020_1.h5'
+DIR_MODEL_LSTM = DIR_ROOT + 'Modules/LSTM_Model_17PL_06_01_2021_01.h5'
 DIR_MODEL_CNN = DIR_ROOT + 'Modules/VGG16_Model.h5'
 DIR_TRANSFER_VALUES_VGG16_MODEL = DIR_ROOT + 'Modules/TransferValuesVGG16.npy'
 SIZE = (224, 224)
@@ -30,7 +30,7 @@ DENSE1 = 1024
 DENSE2 = 70
 EPOCH = 400
 BATCH_SIZE = 300
-LEARNING_RATE = 0.00001
+LEARNING_RATE = 0.0001
 # So Luong Validation
 VALID_PERCENT = 0.2
 # % Du lieu de test
@@ -59,23 +59,23 @@ VIDEO_NAMES = [
 ]
 
 VIDEO_NAMES_DETAIL = [
-    'bc',
-    'cq',
-    'da',
-    'dn',
-    'kc',
-    'lg',
-    'lk',
-    'na',
-    'nc',
-    'ne',
-    'nt',
-    'om',
-    'tc',
-    'vk',
-    'xd',
-    'xt',
-    'no'
+    'bc - Bop Co',
+    'cq - Coi Quan Ao',
+    'da - Da, Dap',
+    'dn - Danh, Tat',
+    'kc - Kep Co',
+    'lg - Len Goi',
+    'lk - Loi Keo',
+    'na - Nan Nhan Nam',
+    'nc - Nam Co',
+    'ne - Nem Do Vat',
+    'nt - Nam Toc',
+    'om - Om, Vat Lon',
+    'tc - Thu The Vo',
+    'vk - Vat, Vu Khi',
+    'xd - Xo Day',
+    'xt - Xi Tay',
+    'no'# Khong co hanh dong bao luc
 ]
 
 VIDEO_LABELS = [

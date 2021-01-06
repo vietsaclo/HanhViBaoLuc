@@ -16,13 +16,13 @@ def fun_getFileNames(path: str) -> list:
     return os.listdir(path)
 
 
-def fun_showVideoPath(path: str, delay: int = 25) -> None:
+def fun_showVideoPath(path: str, delay: int = 25, title= 'frame') -> None:
     cap = cv2.VideoCapture(path)
     isContinue, frame = cap.read()
     while True:
         if not isContinue:
             break
-        cv2.imshow('frame', frame)
+        cv2.imshow(title, frame)
         if cv2.waitKey(delay=delay) & 0xFF == ord('q'):
             break
         isContinue, frame = cap.read()
@@ -31,7 +31,7 @@ def fun_showVideoPath(path: str, delay: int = 25) -> None:
     cv2.destroyAllWindows()
 
 
-def fun_getFramesOfVideo(path: str, count: int = 20) -> list:
+def fun_getFramesOfVideo(path: str, count: int = 30) -> list:
     cap = cv2.VideoCapture(path)
     isContinue, frame = cap.read()
     imgs = []
@@ -59,18 +59,18 @@ def fun_getFramesOfVideo_ALL(path: str) -> list:
     return imgs
 
 
-def fun_showVideoFrames(frames: list, delay: int = 25) -> None:
+def fun_showVideoFrames(frames: list, delay: int = 30, title= 'frame') -> None:
     for frame in frames:
-        cv2.imshow('frame', frame)
+        cv2.imshow(title, frame)
         if cv2.waitKey(delay=delay) & 0xFF == ord('q'):
             break
 
 
-def fun_showVideo(source, delay: int = 25) -> None:
+def fun_showVideo(source, delay: int = 30, title= 'frame') -> None:
     if isinstance(source, str):
-        fun_showVideoPath(path=source, delay=delay)
+        fun_showVideoPath(path=source, delay=delay, title= title)
     else:
-        fun_showVideoFrames(frames=source, delay=delay)
+        fun_showVideoFrames(frames=source, delay=delay, title= title)
 
 
 def fun_resizeFrames(frames: list, size: tuple = (224, 224)) -> list:
@@ -86,6 +86,17 @@ def fun_resizeFrames(frames: list, size: tuple = (224, 224)) -> list:
     cv2.destroyAllWindows()
     return imgs
 
+# Danh nhan video
+def fun_getVideoLabelNames_EachFolder(path: str):
+    names = []
+
+    for fol in os.listdir(path):
+        folder = path + '/' + fol
+        fileNames = fun_getFileNames(path=folder)
+        for file in fileNames:
+            names.append(file)
+
+    return names
 
 def fun_saveFramesToVideo(frames: list, path: str, fps: int = 30) -> bool:
     try:
@@ -173,7 +184,7 @@ def fun_extractZipFile(pathFileZip: str, pathToSave: str) -> None:
 
 def fun_print_process(count: int, max: int, mess: str = 'Processing: ') -> None:
   process = count / max
-  mess = '\r - ' +  mess + str(process * 100) + '% | ' + str(count) + '/' + str(max)
+  mess = '\r - ' +  mess + '{0:.2f}'.format(process * 100) + '% | ' + str(count) + '/' + str(max)
   sys.stdout.write(mess)
   sys.stdout.flush()
 
@@ -266,3 +277,7 @@ def fun_dayMinus(dayFrom:str, dayTo:str):
     
     res = str(dT - dF);
     return res[0] != '-', res
+
+def fun_makeDir(directory: str):
+    if not os.path.exists(directory):
+        os.mkdir(directory)
