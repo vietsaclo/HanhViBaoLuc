@@ -19,7 +19,7 @@ DIR_INPUT_TEST1 = DIR_ROOT + 'Data/Test1'
 DIR_INPUT_VALIDATION = DIR_ROOT + 'Data/Validation'
 DIR_INPUT_SHOW_VIDEO_TEST = DIR_ROOT + 'Data/ShowVideoTest'
 DIR_INPUT_SHOW_VIDEO_TRAIN = DIR_ROOT + 'Data/ShowVideoTrain'
-DIR_MODEL_LSTM = DIR_ROOT + 'Modules/LSTM_Model_17PL_27_12_2020_1.h5'
+DIR_MODEL_LSTM = DIR_ROOT + 'Modules/LSTM_Model_17PL_06_01_2021_01.h5'
 DIR_MODEL_CNN = DIR_ROOT + 'Modules/VGG16_Model.h5'
 DIR_TRANSFER_VALUES_VGG16_MODEL = DIR_ROOT + 'Modules/TransferValuesVGG16.npy'
 SIZE = (224, 224)
@@ -30,7 +30,7 @@ DENSE1 = 1024
 DENSE2 = 70
 EPOCH = 400
 BATCH_SIZE = 300
-LEARNING_RATE = 0.00001
+LEARNING_RATE = 0.0001
 # So Luong Validation
 VALID_PERCENT = 0.2
 # % Du lieu de test
@@ -75,7 +75,7 @@ VIDEO_NAMES_DETAIL = [
     'vk - Vat, Vu Khi',
     'xd - Xo Day',
     'xt - Xi Tay',
-    ''# Khong co hanh dong bao luc
+    'no'# Khong co hanh dong bao luc
 ]
 
 VIDEO_LABELS = [
@@ -471,7 +471,7 @@ def fun_showAnalysis(history):
     plt.show()
 
 def fun_loadModelLSTM():
-    modelLSTM = fun_getModelLSTM_6(num_classify= NUM_CLASSIFY)
+    modelLSTM = fun_getModelLSTM_2(num_classify= NUM_CLASSIFY)
     modelLSTM.load_weights(filepath= DIR_MODEL_LSTM)
     return modelLSTM
 

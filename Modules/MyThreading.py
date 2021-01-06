@@ -36,8 +36,11 @@ class MyThreadingVideo:
 
         transfer = cf.fun_getTransferValue_EDIT(pathVideoOrListFrame= self.frames, modelVGG16= self.vgg16_model)
         pre, real = libs.fun_predict(modelLSTM= self.lstm_model, transferValue=transfer)
-        conv = cf.VIDEO_NAMES_DETAIL[pre] if real > 0.73 else ''
-        text = 'Predict: {0} [ {1:.4f} ]'.format(conv, real)
+        conv = cf.VIDEO_NAMES_DETAIL[pre]
+        if real > 0.6 and conv != 'no':
+            text = 'Predict: {0} [ {1:.4f} ]'.format(conv, real)
+        else:
+            text = ''
 
         if self.lbShow is not None:
             # Show thread video
@@ -45,8 +48,7 @@ class MyThreadingVideo:
                 image = libs.fun_cv2_imageArrayToImage(containerFather= self.lbFather, frame= frame.copy(), reSize= 0.8)
                 self.lbShow.config(image= image)
                 self.lbShow.image = image
-
-        self.lbFather.config(bg= 'red')
+                
         self.lbShowKetQua.config(text= text)
 
         if text != '':
