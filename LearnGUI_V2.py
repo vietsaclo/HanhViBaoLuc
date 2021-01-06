@@ -156,7 +156,7 @@ class ChoseSourceWindow:
         if self.isUsingIpWebcam.get() == 0:
             url = self.fun_getURL_IPCam(ip=self.tbSource.get())
         else:
-            self.RETURN_RESULT = filedialog.askopenfilename(initialdir="/", title="Select file",
+            self.RETURN_RESULT = filedialog.askopenfilename(initialdir="FileInput/Test", title="Select file",
                                                             filetypes=(("AVI files", "*.AVI"), ("MP4 files", "*.MP4"), ("ALL files", "*.*")))
             self.fun_reloadHolderSource(source=self.RETURN_RESULT)
             url = self.RETURN_RESULT
@@ -558,6 +558,7 @@ class MyApp:
             self.lbVideoFrames.config(image=image)
             self.lbVideoFrames.image = image
             isContinue, self.frame = self.videoCap.read()
+            cv2.waitKey(7)
             # Doc khong duoc la het video -> nho thoat ra
             if not isContinue:
                 break
