@@ -4,7 +4,7 @@ import cv2
 import argparse
 import numpy as np
 
-imageDetection = 'F:/imgs/bc01_0.jpg'
+imageDetection = 'D:/01.jpg'
 weightName = 'yolov3.weights'
 configName = 'yolov3.cfg'
 className = 'yolov3.txt'
@@ -98,19 +98,20 @@ for i in indices:
     w = box[2]
     h = box[3]
     draw_prediction(image, class_ids[i], confidences[i], round(x), round(y), round(x + w), round(y + h))
-    if class_ids[i] == 0:
-        y = int(y)
-        yh = int(y + h)
-        x = int(x)
-        xw = int(x + w)
-        img = imgOriganal[y:yh, x:xw]
-        imgsGet.append([img, [y, yh, x, xw]])
+    # if class_ids[i] == 0:
+    y = int(y)
+    yh = int(y + h)
+    x = int(x)
+    xw = int(x + w)
+    img = imgOriganal[y:yh, x:xw]
+    imgsGet.append([img, [y, yh, x, xw]])
+    # cv2.imshow(str(index), img)
     index+=1
 
 # cv2.imshow("object detection", image)
 
-image = image * 0
-# cv2.imshow('adf', image)
+# image = image * 0
+cv2.imshow('adf', image)
 
 def fun_sumWidthHeight(img):
     width, height, _ = img.shape
@@ -149,9 +150,9 @@ def fun_blankFrame(imgs):
         
 
 # fun_getTowImageLarge(imgsGet)
-fun_blankFrame(imgsGet)
+# fun_blankFrame(imgsGet)
 
-cv2.imshow('final', image)
+# cv2.imshow('final', image)
 
 
 end = time.time()
