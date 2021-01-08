@@ -402,6 +402,36 @@ def fun_get5FrameOfVideoFrames(frames: list, startID: int= 3):
         _id += 5
     return result
 
+def fun_temp(pathVideo: str, pathSave: str):
+    cap = cv2.VideoCapture(pathVideo)
+    isContinue, frame = cap.read()
+    if not isContinue:
+        return
+    size = (int(1280 * 0.5), int(720 * 0.5))
+    wr = cv2.VideoWriter(pathSave, cv2.VideoWriter_fourcc(*'MJPG'), 30, size)
+    count = 0
+    while isContinue:
+        frame[20:60, 0:] = frame[20:60, 0:] * 0
+        frame = cv2.resize(frame, size)
+        color = (9, 141, 0)
+        cv2.putText(img=frame,
+                          text='viet saclo: {0}'.format(count),
+                          org=(50, 40),
+                          fontScale=1,
+                          fontFace=cv2.FONT_HERSHEY_COMPLEX_SMALL,
+                          thickness=1,
+                          color=color)
+        count += 1
+        wr.write(frame)
+        cv2.imshow('f', frame)
+        cv2.waitKey(1)
+
+        isContinue, frame = cap.read()
+    
+    wr.release()
+    cap.release()
+    cv2.destroyAllWindows()
+
 if __name__ == '__main__':
     # fun_danhLaiIDChoVideoGoc(DIR_INPUT=DIR_INPUT_VDGOC, DIR_OUTPUT=DIR_OUTPUT_VDGOC)
     # fun_danhLaiIDChoVideo(DIR_INPUT=DIR_INPUT, DIR_OUTPUT=DIR_OUTPUT, DIR_OUTPUT_LARGE=DIR_OUTPUT_LARGE, IS_RESIZE=True)
@@ -446,9 +476,12 @@ if __name__ == '__main__':
     #     isCheckFirst= False
     # )
     
-    fun_get5FrameOfVideo(
-        dirInput= 'G:/TongHopDataKhoaLuan/[TrainQuaCacLan]',
-        dirOutput= 'G:/TongHopDataKhoaLuan/4_TMP/tmp'
-    )
+    # fun_get5FrameOfVideo(
+    #     dirInput= 'G:/TongHopDataKhoaLuan/[TrainQuaCacLan]',
+    #     dirOutput= 'G:/TongHopDataKhoaLuan/4_TMP/tmp'
+    # )
     
-
+    fun_temp(
+        pathVideo= 'C:/Users/nguye/OneDrive/Máy tính/testFull2_out_06_01_2021_01_3.avi',
+        pathSave= 'C:/Users/nguye/OneDrive/Máy tính/out.avi'
+    )

@@ -408,10 +408,10 @@ class MyApp:
         self.frameVideo4.grid_columnconfigure(0, weight=1)
 
         self.arrThread = []
-        thread1 = MyThreadingVideo(lbShow=self.lbVideoFrames1, lbFather=self.frameVideo1, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model)
-        thread2 = MyThreadingVideo(lbShow=self.lbVideoFrames2, lbFather=self.frameVideo2, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model)
-        thread3 = MyThreadingVideo(lbShow=self.lbVideoFrames3, lbFather=self.frameVideo3, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model)
-        thread4 = MyThreadingVideo(lbShow=self.lbVideoFrames4, lbFather=self.frameVideo4, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model)
+        thread1 = MyThreadingVideo(lbShow=self.lbVideoFrames1, lbFather=self.frameVideo1, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model, treeAction=None)
+        thread2 = MyThreadingVideo(lbShow=self.lbVideoFrames2, lbFather=self.frameVideo2, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model, treeAction=None)
+        thread3 = MyThreadingVideo(lbShow=self.lbVideoFrames3, lbFather=self.frameVideo3, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model, treeAction=None)
+        thread4 = MyThreadingVideo(lbShow=self.lbVideoFrames4, lbFather=self.frameVideo4, lbShowKetQua= self.lbKetQuaBaoLuc, vgg16_model= self.vgg16_model, lstm_model= self.lstm_model, treeAction=None)
         self.arrThread.append(thread1)
         self.arrThread.append(thread3)
         self.arrThread.append(thread4)
@@ -444,6 +444,7 @@ class MyApp:
                 break
 
             frames.append(self.frame.copy())
+            cv2.waitKey(5)
             if count == 19:
                 self.arrThread[xoayVong].setFrames(frames)
                 self.arrThread[xoayVong].startShowVideo()
