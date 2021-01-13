@@ -89,6 +89,7 @@ class ChoseSourceWindow:
                                     font=('Helvetica', 18, 'bold'),
                                     cursor=CURSOR_DF
                                     )
+
         self.checkDir.grid(row=0, column=0, sticky='nsew')
         self.frame1.grid_rowconfigure(0, weight=1)
         self.frame1.grid_columnconfigure(0, weight=1)
@@ -116,6 +117,12 @@ class ChoseSourceWindow:
         self.btnOk.grid(row=0, column=0, sticky='nsew')
         self.frame3.grid_columnconfigure(0, weight=1)
         self.frame3.grid_rowconfigure(0, weight=1)
+
+        # ----------- bo di tinh nang camera -------------
+        self.isUsingIpWebcam.set(1)
+        self.fun_CheckIsUsingCamChange()
+        self.checkDir.config(state='disable')
+        # ------------------------------------------------
 
     def fun_CheckIsUsingCamChange(self):
         if self.isUsingIpWebcam.get() == 0:
@@ -156,7 +163,7 @@ class ChoseSourceWindow:
         if self.isUsingIpWebcam.get() == 0:
             url = self.fun_getURL_IPCam(ip=self.tbSource.get())
         else:
-            self.RETURN_RESULT = filedialog.askopenfilename(initialdir="FileInput/Test", title="Select file",
+            self.RETURN_RESULT = filedialog.askopenfilename(initialdir="/", title="Select file",
                                                             filetypes=(("AVI files", "*.AVI"), ("MP4 files", "*.MP4"), ("ALL files", "*.*")))
             self.fun_reloadHolderSource(source=self.RETURN_RESULT)
             url = self.RETURN_RESULT
@@ -196,8 +203,9 @@ class MyApp:
         self.vgg16_model.summary()
 
         # Load model LSTM
-        self.lstm_model = cf.fun_loadModelLSTM()
-        self.lstm_model.summary()
+        # self.lstm_model = cf.fun_loadModelLSTM()
+        # self.lstm_model.summary()
+        self.lstm_model = None
 
         self.initComponent()
 
@@ -259,7 +267,7 @@ class MyApp:
                     cursor="hand1",)
         cal.selection_set(datetime.now())
         cal.pack(fill="both", expand=True)
-        self.tbHour = EntryWithPlaceholder(top, placeholder= 'TIME SELECTED')
+        self.tbHour = EntryWithPlaceholder(top, placeholder= 'HOURS SELECTED')
         self.tbHour.pack(fill= 'both', expand= True, padx= 10, pady= 10)
         self.tbMinute = EntryWithPlaceholder(top, placeholder= 'MINUTE SELECTED')
         self.tbMinute.pack(fill= 'both', expand= True, padx= 10, pady= 10)
@@ -558,7 +566,6 @@ class MyApp:
             self.lbVideoFrames.config(image=image)
             self.lbVideoFrames.image = image
             isContinue, self.frame = self.videoCap.read()
-            cv2.waitKey(7)
             # Doc khong duoc la het video -> nho thoat ra
             if not isContinue:
                 break
