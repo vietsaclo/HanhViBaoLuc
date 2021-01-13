@@ -12,13 +12,13 @@ if __name__ == '__main__':
         - Truy cap vao thu muc DIR_INPUT_TRAIN lay toan bo file video va nhan bo vao mang.
         - Vidu: names[da1_1_111_001.avi,nt2_1_222_002.avi] ~ labels[ [1,0,0], [0,1,0] ]
     '''
-    # names, labels = cf.fun_getVideoLabelNames_EachFolder(path=cf.DIR_INPUT_TRAIN)
-    #
-    # print('len all: '+str(len(names)))
-    # input('any: ')
+    names, labels = cf.fun_getVideoLabelNames_EachFolder(path=cf.DIR_INPUT_TRAIN)
+    
+    print('len all: '+str(len(names)))
+    input('any: ')
 
-    # print('len Train: ', len(names))
-    # input('any: ')
+    print('len Train: ', len(names))
+    input('any: ')
 
     '''
         CHUAN BI TAP DU LIEU & NHAN (lable) DE TRAIN LSTM,
@@ -26,11 +26,11 @@ if __name__ == '__main__':
         Moi hinh duoc cho qua VGG16 de lay mau ~ 4096
         - Vidu: 20 frame (224 x 224) ~ 20 * 4096 = [ [4096PhanTu],... [4096PhanTu] ]
     '''
-    # trainSet, labelSet = cf.fun_getTrainSet_LabelSet_SaveFile(pathVideoOrListFrame=cf.DIR_INPUT_TRAIN
-    #                                                  , numItem=len(names), modelVGG16= modelVGG16, names= names, labels= labels)
+    trainSet, labelSet = cf.fun_getTrainSet_LabelSet_SaveFile(pathVideoOrListFrame=cf.DIR_INPUT_TRAIN
+                                                     , numItem=len(names), modelVGG16= modelVGG16, names= names, labels= labels)
 
     # Load File Saved of Data after throw VGG16 Model
-    trainSet, labelSet = cf.fun_getTrainSet_LabelSet_LoadFile(numItem= 400 * 16)
+    # trainSet, labelSet = cf.fun_getTrainSet_LabelSet_LoadFile(numItem= 400 * 17)
 
     print('total [train, vald, test]: ', len(trainSet))
     input('any: ')
@@ -57,23 +57,23 @@ if __name__ == '__main__':
     '''
     history = cf.fun_START_TRAINT_LSTM_PERCENT_K_Fold(modelLSTM= modelLSTM, trainSet= trainSet, labelSet= labelSet, testSet= testSet, testLabelSet= testLabelSet)
 
-    # '''
-    #     SAVE MODEL LSTM VAO O DIA
-    # '''
-    # modelLSTM.save(cf.DIR_MODEL_LSTM)
+    '''
+        SAVE MODEL LSTM VAO O DIA
+    '''
+    modelLSTM.save(cf.DIR_MODEL_LSTM)
 
-    # '''
-    #     HIEN THI BIEU DO HOI TU
-    # '''
-    # cf.fun_showAnalysis(history= history)
-    #
-    # #-----------------------
-    #
-    # print('Len Test: ' + str(len(testSet)))
-    # input('any: ')
-    #
-    # '''
-    #     DU DOAN % DO CHINH XAC,
-    #     - Thu muc test tai: Data/Test/
-    # '''
-    # cf.fun_evaluate(modelLSTM=modelLSTM, testSet=testSet, testLabelSet=testLabelSet)
+    '''
+        HIEN THI BIEU DO HOI TU
+    '''
+    cf.fun_showAnalysis(history= history)
+    
+    #-----------------------
+    
+    print('Len Test: ' + str(len(testSet)))
+    input('any: ')
+    
+    '''
+        DU DOAN % DO CHINH XAC,
+        - Thu muc test tai: Data/Test/
+    '''
+    cf.fun_evaluate(modelLSTM=modelLSTM, testSet=testSet, testLabelSet=testLabelSet)
