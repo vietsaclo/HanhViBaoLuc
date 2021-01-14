@@ -7,13 +7,13 @@ Thành viên thực hiện:
 2. Nguyễn Quốc Việt - 08DHTH1 - HUFI
 3. Bùi Vũ Trường - 08DHTH1 - HUFI
 <h2>Từng bước thực hiện trong thuật toán</h2>
-![Image1 of vietsaclo](https://github.com/vietsaclo/HanhViBaoLuc/FileInput/Imgs/01.png)
+![Image1 of vietsaclo](https://github.com/vietsaclo/HanhViBaoLuc/blob/14_01_2021_laptop/FileInput/Imgs/01.png)
 <h2>Mô hình tổng quát của thuật toán</h2>
-![Image2 of vietsaclo](https://github.com/vietsaclo/HanhViBaoLuc/FileInput/Imgs/02.png)
+![Image2 of vietsaclo](https://github.com/vietsaclo/HanhViBaoLuc/blob/14_01_2021_laptop/FileInput/Imgs/02.png)
 <h2>Video demo 1</h2>
-![video1 of vietsaclo](https://github.com/vietsaclo/HanhViBaoLuc/FileInput/Test/kc01.avi)
+![video1 of vietsaclo](https://github.com/vietsaclo/HanhViBaoLuc/blob/14_01_2021_laptop/FileInput/Test/kc01.avi)
 <h2>Video demo 2</h2>
-![video2 of vietsaclo](https://github.com/vietsaclo/HanhViBaoLuc/FileInput/Test/lk01.avi)
+![video2 of vietsaclo](https://github.com/vietsaclo/HanhViBaoLuc/blob/14_01_2021_laptop/FileInput/Test/lk01.avi)
 
 <h2>Tổng Hợp Các Link Download</h2>
 
