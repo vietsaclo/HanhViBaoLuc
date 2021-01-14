@@ -150,8 +150,6 @@ videos/
 *.h5
 *.eps
 *.npy
-*.avi
 Datatest/
 settings.json
 *.weights
-FileInput/Test/
