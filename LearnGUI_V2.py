@@ -203,8 +203,13 @@ class MyApp:
         self.vgg16_model.summary()
 
         # Load model LSTM
-        self.lstm_model = cf.fun_loadModelLSTM()
-        self.lstm_model.summary()
+        try:
+            self.lstm_model = cf.fun_loadModelLSTM()
+            self.lstm_model.summary()
+        except:
+            print('# '*20)
+            libs.fun_print(name= 'Load Model LSTM', value='File Not Found!');
+            return
 
         self.initComponent()
 
