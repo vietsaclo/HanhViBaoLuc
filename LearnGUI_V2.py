@@ -575,6 +575,7 @@ class MyApp:
                 break
 
             frames.append(self.frame.copy())
+            cv2.waitKey(7)
             if count == 19:
                 self.arrThread[xoayVong].setFrames(frames)
                 self.arrThread[xoayVong].startShowVideo()
