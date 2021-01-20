@@ -59,22 +59,22 @@ VIDEO_NAMES = [
 ]
 
 VIDEO_NAMES_DETAIL = [
-    'bc - Bop Co',
-    'cq - Coi Quan Ao',
-    'da - Da, Dap',
-    'dn - Danh, Tat',
-    'kc - Kep Co',
-    'lg - Len Goi',
-    'lk - Loi Keo',
-    'na - Nan Nhan Nam',
-    'nc - Nam Co',
-    'ne - Nem Do Vat',
-    'nt - Nam Toc',
-    'om - Om, Vat Lon',
-    'tc - Thu The Vo',
-    'vk - Vat, Vu Khi',
-    'xd - Xo Day',
-    'xt - Xi Tay',
+    'bc - Bóp Cổ',
+    'cq - Cởi Quần Áo',
+    'da - Đá, Đạp',
+    'dn - Đánh, Tát',
+    'kc - Kẹp Cổ',
+    'lg - Lên Gối',
+    'lk - Lôi Kéo',
+    'na - Nằm Xuống Sàn',
+    'nc - Nắm Cổ',
+    'ne - Ném Đồ Vật',
+    'nt - Nắm Tóc',
+    'om - Ôm, Vật Lôn',
+    'tc - Thủ Thế Võ',
+    'vk - Vật, Vũ Khí',
+    'xd - Xô Đẩy',
+    'xt - Xỉ Tay',
     'no'# Khong co hanh dong bao luc
 ]
 

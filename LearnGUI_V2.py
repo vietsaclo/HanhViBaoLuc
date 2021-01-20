@@ -6,7 +6,7 @@ import cv2
 import threading
 from PIL import Image
 from PIL import ImageTk
-from Modules.MyComponents import TreeActionDetection
+from Modules.MyComponents import *
 from tkcalendar import Calendar
 from Modules.MyThreading import MyThreadingVideo
 from threading import Thread
@@ -489,7 +489,41 @@ class MyApp:
         # Hang dong duoc xac thuc tu phai nguoi dung
         self.URL_VIDEO = self.app.RETURN_RESULT
         self.fun_taiGiaoDien17CapDo()
+
+        # Truoc khi load video va xem ket qua, kich hoat GPU len truoc
+        self.fun_kichHoatGPU_Threading()
+
+        # Thuc hien load video bang threading va xem ket qua
+        # self.videoLoadingThreading()
+
+    def fun_kichHoatGPU(self,):
+        # khoi tao kich hoat
+        self.ACTIVE_OK = False
+
+        # show by threading
+        t_loading = threading.Thread(target= self.fun_showLoadingCMD, args=())
+        t_loading.setDaemon(True)
+        t_loading.start()
+
+        # kich hoat GPU
+        MAX_COUNT_ACTIVE = 5
+        for _ in range(MAX_COUNT_ACTIVE):
+            _20F = libs.fun_getFramesOfVideo(self.URL_VIDEO, count= 20)
+            transfer = cf.fun_getTransferValue_EDIT(pathVideoOrListFrame= _20F, modelVGG16= self.vgg16_model);
+            libs.fun_predict(modelLSTM= self.lstm_model, transferValue= transfer, isPrint= True)
+
+        # OK
+        self.ACTIVE_OK = True
+
+    def fun_showLoadingCMD(self,):
+        while not self.ACTIVE_OK:
+            os.system("start /wait cmd /c LoadingCMD.py")
         self.videoLoadingThreading()
+
+    def fun_kichHoatGPU_Threading(self,):
+        t_kichHoatGPU = threading.Thread(target=self.fun_kichHoatGPU, args=())
+        t_kichHoatGPU.setDaemon(True)
+        t_kichHoatGPU.start()
 
     def makePhanDoanBaoLucGUI6(self):
         self.treeAction = TreeActionDetection(containerFather= self.containerPhanDoanBaoLuc)
