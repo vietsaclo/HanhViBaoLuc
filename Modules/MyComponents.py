@@ -1,8 +1,10 @@
-from tkinter import ttk
 import tkinter as tk
+from tkinter.ttk import Scrollbar, Treeview, Progressbar
+from tkinter.scrolledtext import ScrolledText
 from Modules import LSTM_Config as cf
 from Modules import PublicModules as libs
 import os
+import time 
 
 PATH_SAVE_DETECTION = 'FileOutput/Detection'
 LEN_ID_TREE_ITEM = 6
@@ -11,7 +13,7 @@ class TreeActionDetection:
     def __init__(self, containerFather):
         self.containerFather = containerFather
         self.PATH_SAVE_DETECTION = PATH_SAVE_DETECTION
-        tree=ttk.Treeview(self.containerFather)
+        tree= Treeview(self.containerFather)
         tree["columns"]=("one")
         tree.column("#0", stretch=tk.NO)
         tree.column("one", stretch=tk.NO)
@@ -21,7 +23,7 @@ class TreeActionDetection:
 
         tree.grid(row=0, column= 0, sticky= 'nsew')
         self.tree = tree
-        vsb = ttk.Scrollbar(self.containerFather, orient="vertical", command=tree.yview)
+        vsb = Scrollbar(self.containerFather, orient="vertical", command=tree.yview)
         vsb.grid(row=0, column= 1, sticky= 'nsew')
         self.containerFather.grid_rowconfigure(0, weight=0)
         self.containerFather.grid_columnconfigure(0, weight= 9)
@@ -88,3 +90,4 @@ class TreeActionDetection:
         path = self.PATH_SAVE_DETECTION + '/' + fol
         if not os.path.exists(path= path):
             os.makedirs(name= path)
+            
