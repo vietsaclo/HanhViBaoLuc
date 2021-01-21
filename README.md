@@ -1,30 +1,24 @@
-<h1>Nhận Biết Hành Vi Bạo Lực</h1>
-project thực hiện train trên 6.800 clip bạo lực,
-thực hiện cho qua **VGG16** để lấy mẫu dữ liệu và sau đó 
-cho qua **LSTM** để huấn luyện.
-Thành viên thực hiện:
-1. **Hướng dẫn: Thầy Ngô Dương Hà**
-2. Nguyễn Quốc Việt - 08DHTH1 - HUFI
-3. Bùi Vũ Trường - 08DHTH1 - HUFI
-<h2>Từng bước thực hiện trong thuật toán</h2>
-![Image1 of vietsaclo](https://github.com/vietsaclo/HanhViBaoLuc/blob/14_01_2021_laptop/FileInput/Imgs/01.png)
-<h2>Mô hình tổng quát của thuật toán</h2>
-![Image2 of vietsaclo](https://github.com/vietsaclo/HanhViBaoLuc/blob/14_01_2021_laptop/FileInput/Imgs/02.png)
-<h2>Video demo 1</h2>
-![video1 of vietsaclo](https://github.com/vietsaclo/HanhViBaoLuc/blob/14_01_2021_laptop/FileInput/Test/kc01.avi)
-<h2>Video demo 2</h2>
-![video2 of vietsaclo](https://github.com/vietsaclo/HanhViBaoLuc/blob/14_01_2021_laptop/FileInput/Test/lk01.avi)
+# Nhận Biết Hành Vi Bạo Lực
+Project thực hiện train trên 6.800 clip bạo lực, thực hiện cho qua **VGG16** để lấy mẫu dữ liệu và sau đó cho qua **LSTM** để huấn luyện. 
 
-<h2>Tổng Hợp Các Link Download</h2>
+***Thành viên thực hiện:*** 
 
-*	Python 3.6.2 Link [link google drive!](http://google.com)
-*	Visual Studio Code Link [link google drive!](http://google.com)
-*	Visual Studo 2019 Link [link google drive!](http://google.com)
-*	Cuda version 10.1 Link [link google drive!](http://google.com)
-*	CuDNN version 7.1 Link [link google drive!](http://google.com)
-*	Link code tất cả phiên bản ổn định Link Github
-*	Link code tất cả phiên bản mới nhất Link Github
-*	Link tải nhanh code sử dụng cho google colap “.ipynb” Link [link google drive!](http://google.com)
-*	Link model dự đoán 17 phân loại bạo lực “.h5” Link [link google drive!](http://google.com)
-*	Link video test sử dụng cho báo cáo này Link [link google drive!](http://google.com)
-*	Link file excel tổng hợp tên clip bạo lực Link [link google drive!](http://google.com)
+ - **Hướng dẫn: Thầy Ngô Dương Hà**
+ - Nguyễn Quốc Việt - 08DHTH1 - HUFI
+ - Bùi Vũ Trường - 08DHTH1 - HUFI
+## Từng bước thực hiện trong thuật toán
+![enter image description here](https://raw.githubusercontent.com/vietsaclo/HanhViBaoLuc/main/FileInput/Imgs/01.png)
+## Mô hình tổng quát của thuật toán
+![enter image description here](https://raw.githubusercontent.com/vietsaclo/HanhViBaoLuc/main/FileInput/Imgs/02.png)
+## Tổng Hợp Các Link Download
+ - [Python 3.6.2 Link](https://drive.google.com/file/d/1Jw3s1YgQMn3JL9EhSOotjInrYvl_XxzO/view?usp=sharing)
+ - [Visual Studio Code Link](https://drive.google.com/file/d/1sCbXBG9eRv9Zk58c-bp0m7odPLlEw2N5/view?usp=sharing)
+ - [Visual Studio 2019 Link](https://drive.google.com/file/d/15hc6zX2mkiTod1af8wgYylzjBcmCjM3R/view?usp=sharing)
+ - [Cuda version 10.1 Link](https://drive.google.com/file/d/1xzEbs0DKMfNISg7lsq8g9hWHCTRra1sU/view?usp=sharing)
+ - [CuDNN version 7.1 Link](https://drive.google.com/file/d/18J_wtBnElscEUN4JZCnd3Yo2DudkJLBU/view?usp=sharing)
+ - [Link code tất cả phiên bản ổn định Link Github](https://github.com/vietsaclo/HanhViBaoLuc.git)
+ - [Link code tất cả phiên bản mới nhất Link Github](https://github.com/vietsaclo/HanhViBaoLuc/tree/develop)
+ - [Link tải nhanh code sử dụng cho google colap “.ipynb” Link](https://drive.google.com/file/d/16Rr0H9x1adOtf1oVZ6SRJaDxptt1oeGh/view?usp=sharing)
+ - [Link model dự đoán 17 phân loại bạo lực “.h5” Link](https://drive.google.com/file/d/1Wcu9690NlLfyGGClN3qFWV-t8UDR67U-/view?usp=sharing)
+ - [Link video test sử dụng cho báo cáo này Link](https://drive.google.com/file/d/1SUZukqdFh99Pr4c7LaF_RK_LwM006PT_/view?usp=sharing)
+ - [Link file excel tổng hợp tên clip bạo lực Link](https://drive.google.com/file/d/1UztOsYwXEztdfi1YVpM_3cv7VFiONknf/view?usp=sharing)
