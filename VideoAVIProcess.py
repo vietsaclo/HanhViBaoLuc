@@ -469,19 +469,30 @@ if __name__ == '__main__':
 
     # fun_makeLine2('tc2_7_1000_001_20F.avi')
 
-    # fun_TMP_Rename(
-    #     _id= 6,
-    #     lanCat= 1,
-    #     dirInput= 'G:/TongHopDataKhoaLuan/1_ThuCong/Lan1/TruongHongPhiLan1/Video',
-    #     isCheckFirst= False
-    # )
+    fun_TMP_Rename(
+        _id= 9,
+        lanCat= 3,
+        dirInput= 'G:/TongHopDataKhoaLuan/1_ThuCong/Lan3/PhanThanhDatLan3/Video',
+        isCheckFirst= False
+    )
+
+    # dir_in = 'G:/TongHopDataKhoaLuan/1_ThuCong/Lan2/NguyenMinhNhutLan2/Video'
+    # fileNames = lib.fun_getFileNames(dir_in)
+    # count = 0
+    # for f in fileNames:
+    #     index = 4
+    #     if 'webm' in f:
+    #         index = 5
+    #     name = 'NotFound_'+str(count)+f[len(f)-index:]
+    #     os.renames(dir_in + '/' + f, dir_in + '/' + name)
+    #     count += 1
     
     # fun_get5FrameOfVideo(
     #     dirInput= 'G:/TongHopDataKhoaLuan/[TrainQuaCacLan]',
     #     dirOutput= 'G:/TongHopDataKhoaLuan/4_TMP/tmp'
     # )
     
-    fun_temp(
-        pathVideo= 'C:/Users/nguye/OneDrive/Máy tính/testFull2_out_06_01_2021_01_3.avi',
-        pathSave= 'C:/Users/nguye/OneDrive/Máy tính/out.avi'
-    )
+    # fun_temp(
+    #     pathVideo= 'C:/Users/nguye/OneDrive/Máy tính/testFull2_out_06_01_2021_01_3.avi',
+    #     pathSave= 'C:/Users/nguye/OneDrive/Máy tính/out.avi'
+    # )
