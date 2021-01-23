@@ -22,3 +22,17 @@ Project thực hiện train trên 6.800 clip bạo lực, thực hiện cho qua 
  - [Link model dự đoán 17 phân loại bạo lực “.h5” Link](https://drive.google.com/file/d/1Wcu9690NlLfyGGClN3qFWV-t8UDR67U-/view?usp=sharing)
  - [Link video test sử dụng cho báo cáo này Link](https://drive.google.com/file/d/1SUZukqdFh99Pr4c7LaF_RK_LwM006PT_/view?usp=sharing)
  - [Link file excel tổng hợp tên clip bạo lực Link](https://drive.google.com/file/d/1UztOsYwXEztdfi1YVpM_3cv7VFiONknf/view?usp=sharing)
+ 
+
+# CÁCH CÀI ĐẶT
+
+ 1. pip install tensorflow-gpu==2.2.0
+ 2. pip install keras
+ 3. pip install opencv-python
+ 4. pip install Pillow==2.2.1
+ 5. pip install tkcalendar
+ 6. pip install matplotlib
+ 7. pip install numpy
+
+*Double click **run.bat** file.*
+**feedback** or **support** at [facebook/me](https://www.facebook.com/vietsaclo).
