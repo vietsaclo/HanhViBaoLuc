@@ -63,6 +63,9 @@ def fun_getVideoName(videoName: str):
         tmp = videoName[idStart + 1]
     return result
 
+def fun_thangAbc():
+    pass
+
 
 def chuanHoaToanBoVideoTrongTungThuMuc():
     count1 = 0
